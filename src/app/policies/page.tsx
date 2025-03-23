@@ -27,7 +27,7 @@ export default function PoliciesPage() {
       description: 'Complete financial statements and analysis',
       type: 'report',
       lastUpdated: '1 day ago',
-      fileUrl: '/documents/Annual_Financial_Report_2024.pdf'
+      fileUrl: '/api/generate-report'
     }
   ])
 
@@ -58,7 +58,8 @@ export default function PoliciesPage() {
                     {policy.fileUrl && (
                       <a
                         href={policy.fileUrl}
-                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-burgundy-700 bg-burgundy-100 hover:bg-burgundy-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-burgundy-500"
                       >
                         <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
