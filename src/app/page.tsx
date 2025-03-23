@@ -1,103 +1,179 @@
-import Image from "next/image";
+import { HomeIcon, UsersIcon, BuildingOfficeIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+
+interface StatCardProps {
+  title: string;
+  value: string;
+  change: string;
+  changeColor: string;
+  icon: React.ReactNode;
+}
+
+function StatCard({ title, value, change, changeColor, icon }: StatCardProps) {
+  return (
+    <div className="bg-white rounded-lg p-6">
+      <div className="flex items-center">
+        <div className="p-3 rounded-full bg-burgundy-100">
+          {icon}
+        </div>
+        <div className="ml-4">
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-lg font-semibold text-gray-900">{value}</p>
+        </div>
+      </div>
+      <div className="mt-4">
+        <p className={`text-sm ${changeColor}`}>{change}</p>
+      </div>
+    </div>
+  );
+}
+
+interface ActivityItemProps {
+  iconColor: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  time: string;
+  statusColor: string;
+  statusText: string;
+}
+
+function ActivityItem({ iconColor, icon, title, description, time, statusColor, statusText }: ActivityItemProps) {
+  return (
+    <div className="flex items-start">
+      <div className={`p-2 rounded-full ${iconColor}`}>
+        {icon}
+      </div>
+      <div className="ml-4 flex-1">
+        <p className="text-sm font-medium text-gray-900">{title}</p>
+        <p className="text-sm text-gray-500">{description}</p>
+      </div>
+      <div className="ml-4">
+        <p className="text-sm text-gray-500">{time}</p>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor}`}>
+          {statusText}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const statIcon1 = <HomeIcon className="h-6 w-6 text-burgundy-700" />;
+  const statIcon2 = <UsersIcon className="h-6 w-6 text-burgundy-700" />;
+  const statIcon3 = <BuildingOfficeIcon className="h-6 w-6 text-burgundy-700" />;
+  const statIcon4 = <CurrencyDollarIcon className="h-6 w-6 text-burgundy-700" />;
+  const activityIcon1 = <HomeIcon className="h-5 w-5 text-burgundy-700" />;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="space-y-8">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-burgundy-800 to-burgundy-600 opacity-95 rounded-t-xl"></div>
+          <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 rounded-t-xl"></div>
+          <div className="relative px-8 py-12">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-white">Welcome back, Admin</h1>
+                <p className="mt-2 text-burgundy-100 text-lg">Here's what's happening with your properties today</p>
+              </div>
+              <div className="mt-4 md:mt-0">
+                <button className="bg-white text-burgundy-700 px-6 py-2 rounded-lg font-medium hover:bg-burgundy-50 transition-colors">
+                  Generate Report
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
+          <StatCard
+            title="Total Units"
+            value="24"
+            change="+2 from last month"
+            changeColor="text-green-600"
+            icon={statIcon1}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <StatCard
+            title="Total Residents"
+            value="48"
+            change="+4 from last month"
+            changeColor="text-green-600"
+            icon={statIcon2}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+          <StatCard
+            title="Active Properties"
+            value="3"
+            change="No change"
+            changeColor="text-gray-600"
+            icon={statIcon3}
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <StatCard
+            title="Total Revenue"
+            value="$12,450"
+            change="+$1,200 from last month"
+            changeColor="text-green-600"
+            icon={statIcon4}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="px-6 py-4 border-b border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+          </div>
+          <div className="p-6">
+            <div className="space-y-6">
+              <ActivityItem
+                iconColor="bg-burgundy-100"
+                icon={activityIcon1}
+                title="New maintenance request submitted"
+                description="Unit 12B - Water Leak"
+                time="2 hours ago"
+                statusColor="bg-yellow-100 text-yellow-800"
+                statusText="Pending"
+              />
+              <ActivityItem
+                iconColor="bg-green-100"
+                icon={activityIcon1}
+                title="Levy payment received"
+                description="Unit 8A - Q1 2024 Levy"
+                time="4 hours ago"
+                statusColor="bg-green-100 text-green-800"
+                statusText="Completed"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="px-6 py-4 border-b border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900">Upcoming Tasks</h2>
+          </div>
+          <div className="p-6">
+            <div className="space-y-6">
+              <ActivityItem
+                iconColor="bg-blue-100"
+                icon={activityIcon1}
+                title="Annual General Meeting"
+                description="Prepare agenda and documents"
+                time="In 2 days"
+                statusColor="bg-blue-100 text-blue-800"
+                statusText="Upcoming"
+              />
+              <ActivityItem
+                iconColor="bg-purple-100"
+                icon={activityIcon1}
+                title="Insurance Renewal"
+                description="Review and update coverage"
+                time="In 1 week"
+                statusColor="bg-purple-100 text-purple-800"
+                statusText="Pending"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
