@@ -1,19 +1,10 @@
 import { NextResponse } from 'next/server'
-import { renderToStream } from '@react-pdf/renderer'
+import { renderToBuffer } from '@react-pdf/renderer'
 import FinancialReport from '@/app/components/FinancialReport'
 
 export async function GET() {
   try {
-    const stream = await renderToStream(FinancialReport())
-    const chunks: Uint8Array[] = []
-    
-    for await (const chunk of stream) {
-      if (Buffer.isBuffer(chunk)) {
-        chunks.push(chunk)
-      }
-    }
-    
-    const buffer = Buffer.concat(chunks)
+    const buffer = await renderToBuffer(FinancialReport())
     
     return new NextResponse(buffer, {
       headers: {
