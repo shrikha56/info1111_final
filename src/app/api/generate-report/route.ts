@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     // Define the path to the PDF file in the public directory
-    const filePath = path.join(process.cwd(), 'public', 'Annual_Financial_Report_2024.pdf');
+    const filePath = path.join(process.cwd(), 'public', 'nsw.gov.au-Changes to strata laws.pdf');
     
     // Check if file exists
     if (fs.existsSync(filePath)) {
@@ -14,7 +14,7 @@ export async function GET() {
       return new NextResponse(fileBuffer, {
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': 'attachment; filename=Annual_Financial_Report_2024.pdf',
+          'Content-Disposition': 'attachment; filename=nsw.gov.au-Changes to strata laws.pdf',
         },
       });
     }
@@ -26,4 +26,3 @@ export async function GET() {
     return new NextResponse('Error serving PDF', { status: 500 });
   }
 }
-
