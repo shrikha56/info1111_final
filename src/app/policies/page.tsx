@@ -1,15 +1,12 @@
-'use client'
-
-import { useState } from 'react'
-import { DocumentIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react';
 
 interface Policy {
-  id: string
-  title: string
-  description: string
-  type: 'policy' | 'report'
-  lastUpdated: string
-  fileUrl?: string
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  lastUpdated: string;
+  fileUrl: string;
 }
 
 export default function PoliciesPage() {
@@ -20,17 +17,9 @@ export default function PoliciesPage() {
       description: 'Updated bylaws and regulations',
       type: 'policy',
       lastUpdated: '2 days ago',
-      fileUrl: '/api/serve-pdf' // Replace with your file serving API route
+      fileUrl: '/nsw.gov.au-Changes to strata laws.pdf',
     },
-    {
-      id: 'POL002',
-      title: 'Annual Financial Report 2024',
-      description: 'Complete financial statements and analysis',
-      type: 'report',
-      lastUpdated: '1 day ago',
-      fileUrl: '/api/generate-report' // This is for the report, if still applicable
-    }
-  ])
+  ]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
