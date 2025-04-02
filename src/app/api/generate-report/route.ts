@@ -4,7 +4,7 @@ import FinancialReport from '@/app/components/FinancialReport'
 
 export async function GET() {
   try {
-    const buffer = await renderToBuffer(FinancialReport())
+    const buffer = await renderToBuffer(<FinancialReport />);
     
     return new NextResponse(buffer, {
       headers: {
