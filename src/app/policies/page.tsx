@@ -19,7 +19,8 @@ export default function PoliciesPage() {
       title: 'Strata Bylaws 2025',
       description: 'Updated bylaws and regulations',
       type: 'policy',
-      lastUpdated: '2 days ago'
+      lastUpdated: '2 days ago',
+      fileUrl: '/api/serve-pdf' // Replace with your file serving API route
     },
     {
       id: 'POL002',
@@ -27,7 +28,7 @@ export default function PoliciesPage() {
       description: 'Complete financial statements and analysis',
       type: 'report',
       lastUpdated: '1 day ago',
-      fileUrl: '/api/generate-report'
+      fileUrl: '/api/generate-report' // This is for the report, if still applicable
     }
   ])
 
@@ -58,8 +59,6 @@ export default function PoliciesPage() {
                     {policy.fileUrl && (
                       <a
                         href={policy.fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-burgundy-700 bg-burgundy-100 hover:bg-burgundy-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-burgundy-500"
                       >
                         <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
