@@ -1,4 +1,4 @@
-import { HomeIcon, UsersIcon, BuildingOfficeIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, UsersIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
 
 interface StatCardProps {
   title: string;
@@ -61,7 +61,7 @@ export default function Home() {
   const statIcon1 = <HomeIcon className="h-6 w-6 text-burgundy-700" />;
   const statIcon2 = <UsersIcon className="h-6 w-6 text-burgundy-700" />;
   const statIcon3 = <BuildingOfficeIcon className="h-6 w-6 text-burgundy-700" />;
-  const statIcon4 = <CurrencyDollarIcon className="h-6 w-6 text-burgundy-700" />;
+
   const activityIcon1 = <HomeIcon className="h-5 w-5 text-burgundy-700" />;
 
   return (
@@ -107,13 +107,7 @@ export default function Home() {
             changeColor="text-gray-600"
             icon={statIcon3}
           />
-          <StatCard
-            title="Total Revenue"
-            value="$12,450"
-            change="+$1,200 from last month"
-            changeColor="text-green-600"
-            icon={statIcon4}
-          />
+
         </div>
       </div>
 
@@ -136,8 +130,8 @@ export default function Home() {
               <ActivityItem
                 iconColor="bg-green-100"
                 icon={activityIcon1}
-                title="Levy payment received"
-                description="Unit 8A - Q1 2024 Levy"
+                title="Maintenance completed"
+                description="Unit 8A - Window repair"
                 time="4 hours ago"
                 statusColor="bg-green-100 text-green-800"
                 statusText="Completed"
