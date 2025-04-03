@@ -77,9 +77,9 @@ export default function Home() {
                 <p className="mt-2 text-burgundy-100 text-lg">Here's what's happening with your properties today</p>
               </div>
               <div className="mt-4 md:mt-0">
-                <button className="bg-white text-burgundy-700 px-6 py-2 rounded-lg font-medium hover:bg-burgundy-50 transition-colors">
-                  Generate Report
-                </button>
+                <a href="/api/generate-report" target="_blank" className="inline-block bg-white text-burgundy-700 px-6 py-2 rounded-lg font-medium hover:bg-burgundy-50 transition-colors">
+                  View Strata Laws
+                </a>
               </div>
             </div>
           </div>
