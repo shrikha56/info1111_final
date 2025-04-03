@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { DocumentIcon } from '@heroicons/react/24/outline';
 
 interface Policy {
   id: string;
