@@ -19,10 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="min-h-screen bg-gray-50">
-          <div className="flex min-h-screen">
-            <div className="hidden md:flex md:w-64 md:flex-col min-h-screen sticky top-0">
-              <div className="flex flex-1 flex-col border-r border-gray-200 bg-white min-h-screen shadow-sm">
-                <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4 min-h-screen">
+          <div className="flex">
+            <div className="hidden md:flex md:w-64 md:flex-col fixed inset-y-0">
+              <div className="flex flex-col border-r border-gray-200 bg-white h-full shadow-sm">
+                <div className="flex flex-col overflow-y-auto pt-5 pb-4 h-full">
                   <div className="flex flex-shrink-0 items-center px-4">
                     <h1 className="text-2xl font-bold text-burgundy-700">Strata Management</h1>
                   </div>
@@ -30,10 +30,10 @@ export default function RootLayout({
                 </div>
               </div>
             </div>
-            <div className="flex flex-1 flex-col bg-gray-50 min-h-screen">
-              <main className="flex-1 min-h-screen">
-                <div className="py-6 min-h-screen">
-                  <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 min-h-screen">
+            <div className="flex-1 md:pl-64">
+              <main>
+                <div className="py-6">
+                  <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
                     {children}
                   </div>
                 </div>
