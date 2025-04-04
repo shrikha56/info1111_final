@@ -60,6 +60,26 @@
     "src/app/api/generate-report/*.ts": {
       "memory": 1024,
       "maxDuration": 60
+    },
+    "src/app/api/announcements/*.ts": {
+      "memory": 512,
+      "maxDuration": 30
+    },
+    "src/app/api/maintenance/*.ts": {
+      "memory": 512,
+      "maxDuration": 30
+    },
+    "src/app/api/notifications/*.ts": {
+      "memory": 512,
+      "maxDuration": 30
+    },
+    "src/app/api/payments/*.ts": {
+      "memory": 512,
+      "maxDuration": 30
+    },
+    "src/app/api/users/*.ts": {
+      "memory": 512,
+      "maxDuration": 30
     }
   }
 }
