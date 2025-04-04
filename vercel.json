@@ -35,23 +35,6 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "env": {
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_API_URL": "https://info1111final.vercel.app/api",
-    "NEXTAUTH_URL": "https://info1111final.vercel.app",
-    "NEXT_PUBLIC_APP_NAME": "Property Maintenance System",
-    "NEXT_PUBLIC_APP_DESCRIPTION": "Property maintenance request management system",
-    "NEXT_PUBLIC_CONTACT_EMAIL": "support@example.com",
-    "NEXT_PUBLIC_ENABLE_ANALYTICS": "true",
-    "NEXT_PUBLIC_ENABLE_MAINTENANCE_MODE": "false",
-    "NEXT_PUBLIC_ENABLE_NOTIFICATIONS": "true",
-    "NEXT_PUBLIC_MAX_REQUESTS_PER_PAGE": "10",
-    "NEXT_PUBLIC_DEFAULT_PRIORITY": "medium",
-    "RATE_LIMIT_REQUESTS": "100",
-    "RATE_LIMIT_WINDOW_MS": "900000",
-    "SECURITY_HEADERS_ENABLED": "true",
-    "CORS_ALLOWED_ORIGINS": "https://info1111final.vercel.app"
-  },
   "github": {
     "silent": true,
     "autoJobCancelation": true
