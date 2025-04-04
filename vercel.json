@@ -72,14 +72,6 @@
     "src/app/api/notifications/*.ts": {
       "memory": 512,
       "maxDuration": 30
-    },
-    "src/app/api/payments/*.ts": {
-      "memory": 512,
-      "maxDuration": 30
-    },
-    "src/app/api/users/*.ts": {
-      "memory": 512,
-      "maxDuration": 30
     }
   }
 }
