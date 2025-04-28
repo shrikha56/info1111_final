@@ -10,6 +10,7 @@ const navigation = [
   { name: 'Maintenance Requests', href: '/maintenance', icon: WrenchScrewdriverIcon },
   { name: 'Levy Deadlines', href: '/levy', icon: CalendarIcon },
   { name: 'Policies & Reports', href: '/policies', icon: DocumentTextIcon },
+  { name: 'API Testing', href: '/api-test', icon: DocumentTextIcon },
 ]
 
 export default function Navigation() {

@@ -1,49 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  type: 'general' | 'emergency' | 'maintenance';
-  createdAt: string;
-  expiresAt?: string;
-}
-
-// In-memory store (replace with database in production)
-let announcements: Announcement[] = [
-  {
-    id: 'ann-001',
-    title: 'Building Maintenance',
-    content: 'Scheduled maintenance work next week',
-    type: 'maintenance',
-    createdAt: '2025-04-01T00:00:00Z',
-    expiresAt: '2025-04-08T00:00:00Z'
-  }
-];
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   console.log('📣 Fetching announcements...');
-  const { searchParams } = new URL(request.url);
-  const type = searchParams.get('type');
-  
-  console.log(`🔍 Filter type: ${type || 'none'}`);
-  let filteredAnnouncements = [...announcements];
-  
-  // Filter by type if specified
-  if (type) {
-    filteredAnnouncements = filteredAnnouncements.filter(a => a.type === type);
-    console.log(`📋 Found ${filteredAnnouncements.length} announcements of type: ${type}`);
+  try {
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type');
+    
+    console.log(`🔍 Filter type: ${type || 'none'}`);
+    
+    // Build the where clause for Prisma query
+    const whereClause: any = {};
+    
+    // Filter by type if specified
+    if (type) {
+      whereClause.type = type;
+      console.log(`🔍 Filtering announcements of type: ${type}`);
+    }
+    
+    // Filter out expired announcements
+    const now = new Date();
+    whereClause.OR = [
+      { expiresAt: null },
+      { expiresAt: { gt: now } }
+    ];
+    
+    // Query the database
+    const announcements = await prisma.announcement.findMany({
+      where: whereClause,
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+    
+    console.log(`✅ Returning ${announcements.length} active announcements`);
+    return NextResponse.json(announcements);
+  } catch (error) {
+    console.error('Failed to fetch announcements:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch announcements' },
+      { status: 500 }
+    );
   }
-  
-  // Filter out expired announcements
-  const now = new Date();
-  filteredAnnouncements = filteredAnnouncements.filter(a => {
-    if (!a.expiresAt) return true;
-    return new Date(a.expiresAt) > now;
-  });
-
-  console.log(`✅ Returning ${filteredAnnouncements.length} active announcements`);
-  return NextResponse.json(filteredAnnouncements);
 }
 
 export async function POST(request: NextRequest) {
@@ -52,19 +50,20 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     console.log('📦 Received announcement data:', data);
     
-    const newAnnouncement: Announcement = {
-      id: `ann-${String(announcements.length + 1).padStart(3, '0')}`,
-      title: data.title,
-      content: data.content,
-      type: data.type,
-      createdAt: new Date().toISOString(),
-      expiresAt: data.expiresAt
-    };
+    // Create announcement in the database
+    const newAnnouncement = await prisma.announcement.create({
+      data: {
+        title: data.title,
+        content: data.content,
+        type: data.type,
+        expiresAt: data.expiresAt ? new Date(data.expiresAt) : null
+      }
+    });
 
-    announcements.unshift(newAnnouncement);
     console.log(`✅ Created announcement with ID: ${newAnnouncement.id}`);
     return NextResponse.json(newAnnouncement, { status: 201 });
   } catch (error) {
+    console.error('Failed to create announcement:', error);
     return NextResponse.json(
       { error: 'Failed to create announcement' },
       { status: 400 }
@@ -87,8 +86,12 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const index = announcements.findIndex(a => a.id === id);
-    if (index === -1) {
+    // Check if announcement exists
+    const announcement = await prisma.announcement.findUnique({
+      where: { id }
+    });
+    
+    if (!announcement) {
       console.log(`❌ Error: Announcement with ID ${id} not found`);
       return NextResponse.json(
         { error: 'Announcement not found' },
@@ -96,10 +99,15 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    announcements.splice(index, 1);
+    // Delete the announcement from the database
+    await prisma.announcement.delete({
+      where: { id }
+    });
+    
     console.log(`✅ Successfully deleted announcement with ID: ${id}`);
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Failed to delete announcement:', error);
     return NextResponse.json(
       { error: 'Failed to delete announcement' },
       { status: 400 }

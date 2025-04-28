@@ -4,8 +4,11 @@ import { useState } from 'react'
 import { BeakerIcon, DocumentTextIcon, BellIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 
 export default function ApiTestPage() {
-  const [activeTab, setActiveTab] = useState('maintenance')
+  const [activeTab, setActiveTab] = useState('database')
   const [logs, setLogs] = useState<string[]>([])
+  const [maintenanceRequests, setMaintenanceRequests] = useState([])
+  const [notifications, setNotifications] = useState([])
+  const [announcements, setAnnouncements] = useState([])
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
@@ -27,6 +30,13 @@ export default function ApiTestPage() {
       {/* Tab Navigation */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
         <div className="flex flex-wrap gap-4">
+          <button 
+            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'database' ? 'bg-white text-burgundy-700 border border-burgundy-700' : 'bg-gray-100 text-gray-700 hover:bg-burgundy-50 hover:text-burgundy-700'}`}
+            onClick={() => setActiveTab('database')}
+          >
+            <DocumentTextIcon className="h-5 w-5 mr-2" />
+            Database Test
+          </button>
           <button 
             className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'maintenance' ? 'bg-white text-burgundy-700 border border-burgundy-700' : 'bg-gray-100 text-gray-700 hover:bg-burgundy-50 hover:text-burgundy-700'}`}
             onClick={() => setActiveTab('maintenance')}
@@ -62,6 +72,116 @@ export default function ApiTestPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Panel - Controls */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          {activeTab === 'database' && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4 text-black">PostgreSQL Database Test</h2>
+              <div className="p-4 bg-gray-50 rounded-lg mb-6 border border-gray-200">
+                <h3 className="font-medium mb-2 text-black">How to Test Your PostgreSQL Database</h3>
+                <p className="text-sm text-gray-700 mb-2">This panel allows you to test your PostgreSQL database connection by fetching data from your API endpoints. The database has been seeded with sample data using Prisma.</p>
+                <p className="text-sm text-gray-700 mb-2">Each button below will make a direct API call to fetch data from your database tables. The results will be displayed below each section.</p>
+                <p className="text-sm text-gray-700">If you're seeing fewer results than expected, check your database seeding and API implementation.</p>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-medium mb-2 text-black">Maintenance Requests</h3>
+                  <button 
+                    onClick={async () => {
+                      try {
+                        addLog('Fetching maintenance requests from database...')
+                        const res = await fetch('/api/maintenance')
+                        const data = await res.json()
+                        setMaintenanceRequests(data)
+                        addLog(`✅ GET Success: Retrieved ${data.length} maintenance requests`)
+                      } catch (error) {
+                        addLog(`❌ Error: ${error}`)
+                      }
+                    }}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
+                  >
+                    Fetch Maintenance Requests
+                  </button>
+                  {maintenanceRequests.length > 0 && (
+                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                      <p className="font-medium">Found {maintenanceRequests.length} requests</p>
+                      <ul className="mt-2 text-sm space-y-1">
+                        {maintenanceRequests.map((req: any) => (
+                          <li key={req.id}>
+                            <span className="font-medium">{req.title}</span> - {req.status}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                
+                <div>
+                  <h3 className="font-medium mb-2 text-black">Notifications</h3>
+                  <button 
+                    onClick={async () => {
+                      try {
+                        const userId = 'clw5hqvxl0000ztfkgbkqvzwc' // John Resident ID from seed
+                        addLog(`Fetching notifications for user ${userId}...`)
+                        const res = await fetch(`/api/notifications?userId=${userId}`)
+                        const data = await res.json()
+                        setNotifications(data)
+                        addLog(`✅ GET Success: Retrieved ${data.length} notifications`)
+                      } catch (error) {
+                        addLog(`❌ Error: ${error}`)
+                      }
+                    }}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
+                  >
+                    Fetch Notifications
+                  </button>
+                  {notifications.length > 0 && (
+                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                      <p className="font-medium">Found {notifications.length} notifications</p>
+                      <ul className="mt-2 text-sm space-y-1">
+                        {notifications.map((notif: any) => (
+                          <li key={notif.id}>
+                            <span className="font-medium">{notif.title}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                
+                <div>
+                  <h3 className="font-medium mb-2 text-black">Announcements</h3>
+                  <button 
+                    onClick={async () => {
+                      try {
+                        addLog('Fetching announcements from database...')
+                        const res = await fetch('/api/announcements')
+                        const data = await res.json()
+                        setAnnouncements(data)
+                        addLog(`✅ GET Success: Retrieved ${data.length} announcements`)
+                      } catch (error) {
+                        addLog(`❌ Error: ${error}`)
+                      }
+                    }}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
+                  >
+                    Fetch Announcements
+                  </button>
+                  {announcements.length > 0 && (
+                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                      <p className="font-medium">Found {announcements.length} announcements</p>
+                      <ul className="mt-2 text-sm space-y-1">
+                        {announcements.map((ann: any) => (
+                          <li key={ann.id}>
+                            <span className="font-medium">{ann.title}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
           {activeTab === 'maintenance' && (
             <div>
               <h2 className="text-xl font-semibold mb-4 text-black">Test Maintenance API</h2>
@@ -92,11 +212,11 @@ export default function ApiTestPage() {
                     onClick={async () => {
                       try {
                         const newRequest = {
-                          title: 'Test Request',
+                          title: 'Test Maintenance Request',
                           description: 'Created from test page',
-                          unit: '101',
                           priority: 'medium',
-                          category: 'electrical'
+                          requesterId: 'clw5hqvxl0000ztfkgbkqvzwc', // John Resident ID
+                          propertyId: 'clw5hqvxm0002ztfkfz8k9j2t' // Property 101 ID
                         }
                         
                         addLog('Creating maintenance request...')
@@ -131,7 +251,7 @@ export default function ApiTestPage() {
                   <button 
                     onClick={async () => {
                       try {
-                        const userId = 'test-user'
+                        const userId = 'clw5hqvxl0000ztfkgbkqvzwc' // John Resident ID
                         addLog(`Fetching notifications for user ${userId}...`)
                         const res = await fetch(`/api/notifications?userId=${userId}`)
                         const data = await res.json()
@@ -152,10 +272,9 @@ export default function ApiTestPage() {
                     onClick={async () => {
                       try {
                         const newNotification = {
-                          userId: 'test-user',
+                          userId: 'clw5hqvxl0000ztfkgbkqvzwc', // John Resident ID
                           title: 'Test Notification',
-                          message: 'Created from test page',
-                          type: 'info'
+                          message: 'Created from test page'
                         }
                         
                         addLog('Creating notification...')

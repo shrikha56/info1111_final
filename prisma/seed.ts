@@ -7,10 +7,10 @@ async function main() {
   await prisma.notification.deleteMany({});
   await prisma.comment.deleteMany({});
   await prisma.maintenanceRequest.deleteMany({});
+  await prisma.announcement.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.property.deleteMany({});
   await prisma.building.deleteMany({});
-  await prisma.announcement.deleteMany({});
 
   console.log('Seeding database...');
 
