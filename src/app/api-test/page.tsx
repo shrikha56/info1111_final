@@ -1,27 +1,12 @@
 'use client'
 
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
-import { BeakerIcon, DocumentTextIcon, BellIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
+import React, { useState, useEffect } from 'react';
 
 export default function ApiTestPage() {
-  const [activeTab, setActiveTab] = useState('database')
+  const [activeTab, setActiveTab] = useState('maintenance')
   const [logs, setLogs] = useState<string[]>([])
-  const [maintenanceRequests, setMaintenanceRequests] = useState<any[]>([])
-  const [notifications, setNotifications] = useState<any[]>([])
-  const [announcements, setAnnouncements] = useState<any[]>([])
-  const [databaseLoading, setDatabaseLoading] = useState(false);
-  const [databaseLogs, setDatabaseLogs] = useState<Array<string>>([]);
-  // Define a type that can handle both array and object responses
-  type DatabaseResponse = { success?: boolean; message?: string; data?: any } | any[];  
-  const [databaseData, setDatabaseData] = useState<DatabaseResponse>([]);
+  const [isLoading, setIsLoading] = useState(false)
+  const [testResults, setTestResults] = useState<any[]>([])
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
