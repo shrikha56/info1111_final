@@ -18,7 +18,9 @@ export default function ApiTestPage() {
   const [announcements, setAnnouncements] = useState<any[]>([])
   const [databaseLoading, setDatabaseLoading] = useState(false);
   const [databaseLogs, setDatabaseLogs] = useState<Array<string>>([]);
-  const [databaseData, setDatabaseData] = useState<any[]>([]);
+  // Define a type that can handle both array and object responses
+  type DatabaseResponse = { success?: boolean; message?: string; data?: any } | any[];  
+  const [databaseData, setDatabaseData] = useState<DatabaseResponse>([]);
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
@@ -35,7 +37,7 @@ export default function ApiTestPage() {
     try {
       const response = await fetch('/api/maintenance');
       const data = await response.json();
-      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${data?.length || 0} maintenance requests`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} maintenance requests`]);
       setDatabaseData(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -52,7 +54,7 @@ export default function ApiTestPage() {
       // Using a mock user ID for testing
       const response = await fetch('/api/notifications?userId=mock-user-1');
       const data = await response.json();
-      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${data?.length || 0} notifications`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} notifications`]);
       setDatabaseData(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -68,7 +70,7 @@ export default function ApiTestPage() {
     try {
       const response = await fetch('/api/announcements');
       const data = await response.json();
-      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${data?.length || 0} announcements`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} announcements`]);
       setDatabaseData(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -218,7 +220,7 @@ export default function ApiTestPage() {
                   <Button onClick={testSupabaseConnection} disabled={databaseLoading}>
                     Test Supabase Connection
                   </Button>
-                  {databaseData.success !== undefined && (
+                  {!Array.isArray(databaseData) && databaseData.success !== undefined && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
                       <p className="font-medium">Supabase Connection: {databaseData.success ? 'Success' : 'Failed'}</p>
                       {databaseData.message && (
