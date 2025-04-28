@@ -1,4 +1,8 @@
-import { HomeIcon, UsersIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
+'use client'
+
+import { useState, useEffect } from 'react';
+import { HomeIcon, UsersIcon, BuildingOfficeIcon, WrenchScrewdriverIcon, BellIcon } from '@heroicons/react/24/outline';
+import supabase from '@/lib/supabase';
 
 interface StatCardProps {
   title: string;
@@ -58,11 +62,106 @@ function ActivityItem({ iconColor, icon, title, description, time, statusColor, 
 }
 
 export default function Home() {
+  // Icons
   const statIcon1 = <HomeIcon className="h-6 w-6 text-burgundy-700" />;
   const statIcon2 = <UsersIcon className="h-6 w-6 text-burgundy-700" />;
   const statIcon3 = <BuildingOfficeIcon className="h-6 w-6 text-burgundy-700" />;
-
-  const activityIcon1 = <HomeIcon className="h-5 w-5 text-burgundy-700" />;
+  const maintenanceIcon = <WrenchScrewdriverIcon className="h-5 w-5 text-burgundy-700" />;
+  const notificationIcon = <BellIcon className="h-5 w-5 text-blue-700" />;
+  
+  // State for dashboard data
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [stats, setStats] = useState({
+    properties: 0,
+    users: 0,
+    buildings: 0
+  });
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  
+  // Helper function to get status color
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'in_progress': return 'bg-blue-100 text-blue-800';
+      case 'completed': return 'bg-green-100 text-green-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+  
+  // Fetch dashboard data from Supabase
+  useEffect(() => {
+    async function fetchDashboardData() {
+      try {
+        setLoading(true);
+        
+        // Fetch property count
+        const { count: propertiesCount, error: propertiesError } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true });
+          
+        if (propertiesError) throw propertiesError;
+        
+        // Fetch user count
+        const { count: usersCount, error: usersError } = await supabase
+          .from('users')
+          .select('*', { count: 'exact', head: true });
+          
+        if (usersError) throw usersError;
+        
+        // Fetch building count
+        const { count: buildingsCount, error: buildingsError } = await supabase
+          .from('buildings')
+          .select('*', { count: 'exact', head: true });
+          
+        if (buildingsError) throw buildingsError;
+        
+        // Fetch recent maintenance requests
+        const { data: maintenanceData, error: maintenanceError } = await supabase
+          .from('maintenance_requests')
+          .select(`
+            id,
+            title,
+            description,
+            status,
+            created_at,
+            property:properties(unit_number)
+          `)
+          .order('created_at', { ascending: false })
+          .limit(3);
+          
+        if (maintenanceError) throw maintenanceError;
+        
+        // Format maintenance requests as activity items
+        const activityItems = maintenanceData.map((request: any) => ({
+          id: request.id,
+          type: 'maintenance',
+          title: `Maintenance request ${request.status}`,
+          description: `${request.title} - ${request.property?.unit_number || 'Unknown unit'}`,
+          time: new Date(request.created_at).toLocaleString(),
+          status: request.status,
+          icon: maintenanceIcon
+        }));
+        
+        // Update state with fetched data
+        setStats({
+          properties: propertiesCount || 0,
+          users: usersCount || 0,
+          buildings: buildingsCount || 0
+        });
+        
+        setRecentActivity(activityItems);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        setError('Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchDashboardData();
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -86,28 +185,46 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
-          <StatCard
-            title="Total Units"
-            value="24"
-            change="+2 from last month"
-            changeColor="text-green-600"
-            icon={statIcon1}
-          />
-          <StatCard
-            title="Total Residents"
-            value="48"
-            change="+4 from last month"
-            changeColor="text-green-600"
-            icon={statIcon2}
-          />
-          <StatCard
-            title="Active Properties"
-            value="3"
-            change="No change"
-            changeColor="text-gray-600"
-            icon={statIcon3}
-          />
-
+          {loading ? (
+            <div className="col-span-4 p-8 text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-burgundy-700 mb-2"></div>
+              <p className="text-gray-600">Loading dashboard data...</p>
+            </div>
+          ) : error ? (
+            <div className="col-span-4 p-8 text-center">
+              <p className="text-red-600">{error}</p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="mt-4 bg-burgundy-700 text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : (
+            <>
+              <StatCard
+                title="Total Units"
+                value={stats.properties.toString()}
+                change={`${stats.properties > 0 ? stats.properties : 'No'} properties found`}
+                changeColor="text-gray-600"
+                icon={statIcon1}
+              />
+              <StatCard
+                title="Total Residents"
+                value={stats.users.toString()}
+                change={`${stats.users > 0 ? stats.users : 'No'} users found`}
+                changeColor="text-gray-600"
+                icon={statIcon2}
+              />
+              <StatCard
+                title="Active Buildings"
+                value={stats.buildings.toString()}
+                change={`${stats.buildings > 0 ? stats.buildings : 'No'} buildings found`}
+                changeColor="text-gray-600"
+                icon={statIcon3}
+              />
+            </>
+          )}
         </div>
       </div>
 
@@ -118,24 +235,35 @@ export default function Home() {
           </div>
           <div className="p-6">
             <div className="space-y-6">
-              <ActivityItem
-                iconColor="bg-burgundy-100"
-                icon={activityIcon1}
-                title="New maintenance request submitted"
-                description="Unit 12B - Water Leak"
-                time="2 hours ago"
-                statusColor="bg-yellow-100 text-yellow-800"
-                statusText="Pending"
-              />
-              <ActivityItem
-                iconColor="bg-green-100"
-                icon={activityIcon1}
-                title="Maintenance completed"
-                description="Unit 8A - Window repair"
-                time="4 hours ago"
-                statusColor="bg-green-100 text-green-800"
-                statusText="Completed"
-              />
+              {loading ? (
+                <div className="p-4 text-center">
+                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-burgundy-700 mb-2"></div>
+                  <p className="text-gray-600">Loading activity...</p>
+                </div>
+              ) : error ? (
+                <div className="p-4 text-center">
+                  <p className="text-red-600">{error}</p>
+                </div>
+              ) : recentActivity.length === 0 ? (
+                <div className="p-4 text-center">
+                  <p className="text-gray-600">No recent activity found.</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {recentActivity.map((activity) => (
+                    <ActivityItem
+                      key={activity.id}
+                      iconColor={activity.type === 'maintenance' ? 'bg-burgundy-100' : 'bg-blue-100'}
+                      icon={activity.icon}
+                      title={activity.title}
+                      description={activity.description}
+                      time={activity.time}
+                      statusColor={getStatusColor(activity.status)}
+                      statusText={activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -146,24 +274,33 @@ export default function Home() {
           </div>
           <div className="p-6">
             <div className="space-y-6">
-              <ActivityItem
-                iconColor="bg-blue-100"
-                icon={activityIcon1}
-                title="Annual General Meeting"
-                description="Prepare agenda and documents"
-                time="In 2 days"
-                statusColor="bg-blue-100 text-blue-800"
-                statusText="Upcoming"
-              />
-              <ActivityItem
-                iconColor="bg-purple-100"
-                icon={activityIcon1}
-                title="Insurance Renewal"
-                description="Review and update coverage"
-                time="In 1 week"
-                statusColor="bg-purple-100 text-purple-800"
-                statusText="Pending"
-              />
+              {loading ? (
+                <div className="p-4 text-center">
+                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-burgundy-700 mb-2"></div>
+                  <p className="text-gray-600">Loading tasks...</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <ActivityItem
+                    iconColor="bg-blue-100"
+                    icon={<BuildingOfficeIcon className="h-5 w-5 text-blue-700" />}
+                    title="Committee meeting scheduled"
+                    description="Annual general meeting"
+                    time="Tomorrow, 10:00 AM"
+                    statusColor="bg-blue-100 text-blue-800"
+                    statusText="Upcoming"
+                  />
+                  <ActivityItem
+                    iconColor="bg-yellow-100"
+                    icon={<WrenchScrewdriverIcon className="h-5 w-5 text-yellow-700" />}
+                    title="Inspection scheduled"
+                    description="Fire safety inspection"
+                    time="Next week"
+                    statusColor="bg-yellow-100 text-yellow-800"
+                    statusText="Scheduled"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
