@@ -138,8 +138,8 @@ export default function MaintenancePage() {
       
       console.log('Sending maintenance request with data:', requestData)
       
-      // Try the admin API endpoint first
-      const response = await fetch('/api/admin-maintenance', {
+      // Use the direct maintenance API endpoint
+      const response = await fetch('/api/direct-maintenance', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
