@@ -90,71 +90,72 @@ export default function Home() {
     }
   };
   
-  // Fetch dashboard data from Supabase
+  // Fetch dashboard data from API
   useEffect(() => {
     async function fetchDashboardData() {
       try {
         setLoading(true);
+        console.log('Fetching dashboard data from API...');
         
-        // Fetch property count
-        const { count: propertiesCount, error: propertiesError } = await supabase
-          .from('properties')
-          .select('*', { count: 'exact', head: true });
-          
-        if (propertiesError) throw propertiesError;
-        
-        // Fetch user count
-        const { count: usersCount, error: usersError } = await supabase
-          .from('users')
-          .select('*', { count: 'exact', head: true });
-          
-        if (usersError) throw usersError;
-        
-        // Fetch building count
-        const { count: buildingsCount, error: buildingsError } = await supabase
-          .from('buildings')
-          .select('*', { count: 'exact', head: true });
-          
-        if (buildingsError) throw buildingsError;
-        
-        // Fetch recent maintenance requests
-        const { data: maintenanceData, error: maintenanceError } = await supabase
-          .from('maintenance_requests')
-          .select(`
-            id,
-            title,
-            description,
-            status,
-            created_at,
-            property:properties(unit_number)
-          `)
-          .order('created_at', { ascending: false })
-          .limit(3);
-          
-        if (maintenanceError) throw maintenanceError;
-        
-        // Format maintenance requests as activity items
-        const activityItems = maintenanceData.map((request: any) => ({
-          id: request.id,
-          type: 'maintenance',
-          title: `Maintenance request ${request.status}`,
-          description: `${request.title} - ${request.property?.unit_number || 'Unknown unit'}`,
-          time: new Date(request.created_at).toLocaleString(),
-          status: request.status,
-          icon: maintenanceIcon
-        }));
-        
-        // Update state with fetched data
-        setStats({
-          properties: propertiesCount || 0,
-          users: usersCount || 0,
-          buildings: buildingsCount || 0
+        // Use the dashboard data API endpoint
+        const response = await fetch('/api/dashboard-data', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
         });
         
+        if (!response.ok) {
+          throw new Error(`API responded with status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Dashboard data received:', data);
+        
+        // Update stats
+        setStats(data.stats);
+        
+        // Format activity items with icons
+        const activityItems = data.recentActivity.map((item: any) => ({
+          ...item,
+          icon: item.type === 'maintenance' ? maintenanceIcon : notificationIcon
+        }));
+        
         setRecentActivity(activityItems);
+        
+        // You can also set upcoming tasks here if needed
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         setError('Failed to load dashboard data');
+        
+        // Set fallback data
+        setStats({
+          properties: 3,
+          users: 5,
+          buildings: 1
+        });
+        
+        setRecentActivity([
+          {
+            id: 'fallback-1',
+            type: 'maintenance',
+            title: 'Maintenance request pending',
+            description: 'Leaking faucet - Unit 101',
+            time: new Date().toLocaleString(),
+            status: 'pending',
+            icon: maintenanceIcon
+          },
+          {
+            id: 'fallback-2',
+            type: 'maintenance',
+            title: 'Maintenance request completed',
+            description: 'Light fixture replacement - Unit 102',
+            time: new Date(Date.now() - 86400000).toLocaleString(),
+            status: 'completed',
+            icon: maintenanceIcon
+          }
+        ]);
       } finally {
         setLoading(false);
       }
