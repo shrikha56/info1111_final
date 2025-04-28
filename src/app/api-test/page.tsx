@@ -39,7 +39,7 @@ export default function ApiTestPage() {
       const data = await response.json();
       setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} maintenance requests`]);
       setDatabaseData(data);
-    } catch (error) {
+    } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
@@ -56,7 +56,7 @@ export default function ApiTestPage() {
       const data = await response.json();
       setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} notifications`]);
       setDatabaseData(data);
-    } catch (error) {
+    } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
@@ -72,7 +72,7 @@ export default function ApiTestPage() {
       const data = await response.json();
       setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} announcements`]);
       setDatabaseData(data);
-    } catch (error) {
+    } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
@@ -91,7 +91,7 @@ export default function ApiTestPage() {
         setDatabaseLogs((prev: string[]) => [...prev, `ℹ️ ${data.message}`]);
       }
       setDatabaseData(data);
-    } catch (error) {
+    } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
@@ -246,8 +246,8 @@ export default function ApiTestPage() {
                         const res = await fetch('/api/maintenance')
                         const data = await res.json()
                         addLog(`✅ GET Success: Retrieved ${data.length} maintenance requests`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
+                      } catch (error: unknown) {
+                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
                     className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
@@ -278,8 +278,8 @@ export default function ApiTestPage() {
                         
                         const data = await res.json()
                         addLog(`✅ POST Success: Created request ${data.id}`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
+                      } catch (error: unknown) {
+                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
                     className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
@@ -306,8 +306,8 @@ export default function ApiTestPage() {
                         const res = await fetch(`/api/notifications?userId=${userId}`)
                         const data = await res.json()
                         addLog(`✅ GET Success: Retrieved ${data.length} notifications`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
+                      } catch (error: unknown) {
+                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
                     className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
@@ -336,8 +336,8 @@ export default function ApiTestPage() {
                         
                         const data = await res.json()
                         addLog(`✅ POST Success: Created notification ${data.id}`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
+                      } catch (error: unknown) {
+                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
                     className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
@@ -363,8 +363,8 @@ export default function ApiTestPage() {
                         const res = await fetch('/api/announcements')
                         const data = await res.json()
                         addLog(`✅ GET Success: Retrieved ${data.length} announcements`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
+                      } catch (error: unknown) {
+                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
                     className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
@@ -393,8 +393,8 @@ export default function ApiTestPage() {
                         
                         const data = await res.json()
                         addLog(`✅ POST Success: Created announcement ${data.id}`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
+                      } catch (error: unknown) {
+                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
                     className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
@@ -433,8 +433,8 @@ export default function ApiTestPage() {
                         } else {
                           addLog(`❌ PDF download failed: ${res.status}`)
                         }
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
+                      } catch (error: unknown) {
+                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
