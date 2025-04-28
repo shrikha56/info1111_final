@@ -138,8 +138,12 @@ export default function MaintenancePage() {
       
       console.log('Sending maintenance request with data:', requestData)
       
-      // Use the direct maintenance API endpoint
-      const response = await fetch('/api/direct-maintenance', {
+      // Determine which API endpoint to use based on hostname
+      const isVercel = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app');
+      const apiEndpoint = isVercel ? '/api/vercel-maintenance' : '/api/direct-maintenance';
+      console.log(`Using API endpoint: ${apiEndpoint} (Vercel: ${isVercel})`);
+      
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
