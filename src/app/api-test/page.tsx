@@ -38,7 +38,8 @@ export default function ApiTestPage() {
       setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} maintenance requests`]);
       setDatabaseData(data);
     } catch (error) {
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
@@ -54,7 +55,8 @@ export default function ApiTestPage() {
       setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} notifications`]);
       setDatabaseData(data);
     } catch (error) {
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
@@ -69,7 +71,8 @@ export default function ApiTestPage() {
       setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} announcements`]);
       setDatabaseData(data);
     } catch (error) {
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
@@ -87,7 +90,8 @@ export default function ApiTestPage() {
       }
       setDatabaseData(data);
     } catch (error) {
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
