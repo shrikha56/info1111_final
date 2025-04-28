@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react'
+import Link from 'next/link'
 
 export default function ApiTestPage() {
   const [activeTab, setActiveTab] = useState('maintenance')
   const [logs, setLogs] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [testResults, setTestResults] = useState<any[]>([])
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
@@ -16,408 +16,227 @@ export default function ApiTestPage() {
     setLogs([])
   }
 
-  // Database test functions
-  const testMaintenanceRequests = async () => {
-    setMaintenanceRequests([]);
-    setNotifications([]);
-    setAnnouncements([]);
-    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching maintenance requests...']);
-    setDatabaseLoading(true);
+  const testMaintenanceApi = async () => {
     try {
-      const response = await fetch('/api/maintenance');
-      const data = await response.json();
-      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} maintenance requests`]);
-      setDatabaseData(data);
-      setMaintenanceRequests(Array.isArray(data) ? data : []);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
+      setIsLoading(true)
+      addLog('🔍 Testing maintenance API...')
+      
+      // GET request
+      addLog('Fetching maintenance requests...')
+      const getResponse = await fetch('/api/maintenance')
+      const getData = await getResponse.json()
+      addLog(`✅ GET Success: Retrieved ${Array.isArray(getData) ? getData.length : 0} maintenance requests`)
+      
+      // POST request
+      addLog('Creating test maintenance request...')
+      const postResponse = await fetch('/api/maintenance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: 'Test Request ' + new Date().toLocaleTimeString(),
+          description: 'This is a test request created from the API test page',
+          priority: 'medium',
+          category: 'general'
+        })
+      })
+      
+      const postData = await postResponse.json()
+      addLog(`✅ POST Success: Created maintenance request with ID: ${postData.id || 'unknown'}`)
+    } catch (error) {
+      addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
-      setDatabaseLoading(false);
+      setIsLoading(false)
     }
-  };
-
-  const testNotifications = async () => {
-    setMaintenanceRequests([]);
-    setNotifications([]);
-    setAnnouncements([]);
-    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching notifications...']);
-    setDatabaseLoading(true);
-    try {
-      // Using a mock user ID for testing
-      const response = await fetch('/api/notifications?userId=00000000-0000-0000-0000-000000000003');
-      const data = await response.json();
-      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} notifications`]);
-      setDatabaseData(data);
-      setNotifications(Array.isArray(data) ? data : []);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
-    } finally {
-      setDatabaseLoading(false);
-    }
-  };
-
-  const testAnnouncements = async () => {
-    setMaintenanceRequests([]);
-    setNotifications([]);
-    setAnnouncements([]);
-    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching announcements...']);
-    setDatabaseLoading(true);
-    try {
-      const response = await fetch('/api/announcements');
-      const data = await response.json();
-      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} announcements`]);
-      setDatabaseData(data);
-      setAnnouncements(Array.isArray(data) ? data : []);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
-    } finally {
-      setDatabaseLoading(false);
-    }
-  };
+  }
   
-  const testSupabaseConnection = async () => {
-    setMaintenanceRequests([]);
-    setNotifications([]);
-    setAnnouncements([]);
-    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Testing Supabase connection...']);
-    setDatabaseLoading(true);
+  const testNotificationsApi = async () => {
     try {
-      const response = await fetch('/api/test-supabase');
-      const data = await response.json();
-      setDatabaseLogs((prev: string[]) => [...prev, `✅ Supabase connection: ${data.success ? 'Success' : 'Failed'}`]);
-      if (data.message) {
-        setDatabaseLogs((prev: string[]) => [...prev, `ℹ️ ${data.message}`]);
-      }
-      setDatabaseData(data);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
+      setIsLoading(true)
+      addLog('🔍 Testing notifications API...')
+      
+      // GET request with user ID
+      addLog('Fetching notifications...')
+      const response = await fetch('/api/notifications?userId=00000000-0000-0000-0000-000000000003')
+      const data = await response.json()
+      addLog(`✅ GET Success: Retrieved ${Array.isArray(data) ? data.length : 0} notifications`)
+    } catch (error) {
+      addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
     } finally {
-      setDatabaseLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+  
+  const testAnnouncementsApi = async () => {
+    try {
+      setIsLoading(true)
+      addLog('🔍 Testing announcements API...')
+      
+      // GET request
+      addLog('Fetching announcements...')
+      const response = await fetch('/api/announcements')
+      const data = await response.json()
+      addLog(`✅ GET Success: Retrieved ${Array.isArray(data) ? data.length : 0} announcements`)
+    } catch (error) {
+      addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  const testPdfApi = async () => {
+    try {
+      setIsLoading(true)
+      addLog('🔍 Testing PDF generation API...')
+      
+      addLog('Requesting PDF download...')
+      const response = await fetch('/api/generate-report')
+      
+      if (response.ok) {
+        addLog('✅ PDF download successful')
+        // Create a blob from the PDF Stream
+        const blob = await response.blob()
+        // Create a link element to trigger download
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = "strata-report.pdf"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      } else {
+        addLog(`❌ PDF download failed: ${response.status}`)
+      }
+    } catch (error) {
+      addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-black">API Testing Dashboard</h1>
-          <p className="mt-1 text-sm text-black">Test and debug API endpoints</p>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-black">API Testing Dashboard</h1>
+            <p className="text-gray-600">Test and debug API endpoints</p>
+          </div>
+          <Link href="/" className="text-burgundy-700 hover:text-burgundy-800">
+            Back to Dashboard
+          </Link>
         </div>
-      </div>
-      
-      {/* Tab Navigation */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-        <div className="flex flex-wrap gap-4">
-          <button 
-            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'database' ? 'bg-white text-burgundy-700 border border-burgundy-700' : 'bg-gray-100 text-gray-700 hover:bg-burgundy-50 hover:text-burgundy-700'}`}
-            onClick={() => setActiveTab('database')}
-          >
-            <DocumentTextIcon className="h-5 w-5 mr-2" />
-            Database Test
-          </button>
-          <button 
-            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'maintenance' ? 'bg-white text-burgundy-700 border border-burgundy-700' : 'bg-gray-100 text-gray-700 hover:bg-burgundy-50 hover:text-burgundy-700'}`}
-            onClick={() => setActiveTab('maintenance')}
-          >
-            <WrenchScrewdriverIcon className="h-5 w-5 mr-2" />
-            Maintenance
-          </button>
-          <button 
-            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'notifications' ? 'bg-white text-burgundy-700 border border-burgundy-700' : 'bg-gray-100 text-gray-700 hover:bg-burgundy-50 hover:text-burgundy-700'}`}
-            onClick={() => setActiveTab('notifications')}
-          >
-            <BellIcon className="h-5 w-5 mr-2" />
-            Notifications
-          </button>
-          <button 
-            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'announcements' ? 'bg-white text-burgundy-700 border border-burgundy-700' : 'bg-gray-100 text-gray-700 hover:bg-burgundy-50 hover:text-burgundy-700'}`}
-            onClick={() => setActiveTab('announcements')}
-          >
-            <BeakerIcon className="h-5 w-5 mr-2" />
-            Announcements
-          </button>
-          <button 
-            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'pdf' ? 'bg-white text-burgundy-700 border border-burgundy-700' : 'bg-gray-100 text-gray-700 hover:bg-burgundy-50 hover:text-burgundy-700'}`}
-            onClick={() => setActiveTab('pdf')}
-          >
-            <DocumentTextIcon className="h-5 w-5 mr-2" />
-            PDF Generation
-          </button>
+        
+        {/* Tabs */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab('maintenance')}
+              className={`px-4 py-3 text-sm font-medium ${
+                activeTab === 'maintenance'
+                  ? 'text-burgundy-700 border-b-2 border-burgundy-700'
+                  : 'text-gray-500 hover:text-burgundy-700'
+              }`}
+            >
+              Maintenance Requests
+            </button>
+            <button
+              onClick={() => setActiveTab('notifications')}
+              className={`px-4 py-3 text-sm font-medium ${
+                activeTab === 'notifications'
+                  ? 'text-burgundy-700 border-b-2 border-burgundy-700'
+                  : 'text-gray-500 hover:text-burgundy-700'
+              }`}
+            >
+              Notifications
+            </button>
+            <button
+              onClick={() => setActiveTab('announcements')}
+              className={`px-4 py-3 text-sm font-medium ${
+                activeTab === 'announcements'
+                  ? 'text-burgundy-700 border-b-2 border-burgundy-700'
+                  : 'text-gray-500 hover:text-burgundy-700'
+              }`}
+            >
+              Announcements
+            </button>
+            <button
+              onClick={() => setActiveTab('pdf')}
+              className={`px-4 py-3 text-sm font-medium ${
+                activeTab === 'pdf'
+                  ? 'text-burgundy-700 border-b-2 border-burgundy-700'
+                  : 'text-gray-500 hover:text-burgundy-700'
+              }`}
+            >
+              PDF Generation
+            </button>
+          </div>
+          
+          <div className="p-6">
+            {activeTab === 'maintenance' && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 text-black">Test Maintenance API</h2>
+                <p className="mb-4 text-gray-600">Test GET and POST operations for maintenance requests</p>
+                
+                <button
+                  onClick={testMaintenanceApi}
+                  disabled={isLoading}
+                  className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors disabled:opacity-50"
+                >
+                  {isLoading ? 'Testing...' : 'Run Test'}
+                </button>
+              </div>
+            )}
+            
+            {activeTab === 'notifications' && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 text-black">Test Notifications API</h2>
+                <p className="mb-4 text-gray-600">Test GET operations for user notifications</p>
+                
+                <button
+                  onClick={testNotificationsApi}
+                  disabled={isLoading}
+                  className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors disabled:opacity-50"
+                >
+                  {isLoading ? 'Testing...' : 'Run Test'}
+                </button>
+              </div>
+            )}
+            
+            {activeTab === 'announcements' && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 text-black">Test Announcements API</h2>
+                <p className="mb-4 text-gray-600">Test GET operations for announcements</p>
+                
+                <button
+                  onClick={testAnnouncementsApi}
+                  disabled={isLoading}
+                  className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors disabled:opacity-50"
+                >
+                  {isLoading ? 'Testing...' : 'Run Test'}
+                </button>
+              </div>
+            )}
+            
+            {activeTab === 'pdf' && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 text-black">Test PDF Generation API</h2>
+                <p className="mb-4 text-gray-600">Test PDF download functionality</p>
+                
+                <button
+                  onClick={testPdfApi}
+                  disabled={isLoading}
+                  className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors disabled:opacity-50"
+                >
+                  {isLoading ? 'Generating PDF...' : 'Download PDF'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-
-      {/* Content Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Panel - Controls */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          {activeTab === 'database' && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-black">PostgreSQL Database Test</h2>
-              <div className="p-4 bg-gray-50 rounded-lg mb-6 border border-gray-200">
-                <h3 className="font-medium mb-2 text-black">How to Test Your PostgreSQL Database</h3>
-                <p className="text-sm text-gray-700 mb-2">This panel allows you to test your PostgreSQL database connection by fetching data from your API endpoints. The database has been seeded with sample data using Prisma.</p>
-                <p className="text-sm text-gray-700 mb-2">Each button below will make a direct API call to fetch data from your database tables. The results will be displayed below each section.</p>
-                <p className="text-sm text-gray-700">If you're seeing fewer results than expected, check your database seeding and API implementation.</p>
-              </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-medium mb-2 text-black">Maintenance Requests</h3>
-                  <Button 
-                    onClick={testMaintenanceRequests} 
-                    disabled={databaseLoading}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
-                  >
-                    Test Maintenance Requests
-                  </Button>
-                  {maintenanceRequests.length > 0 && (
-                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium text-burgundy-700">Found {maintenanceRequests.length} requests</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {maintenanceRequests.map((req: any) => (
-                          <Badge key={req.id}>{req.title}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2 text-black">Notifications</h3>
-                  <Button 
-                    onClick={testNotifications} 
-                    disabled={databaseLoading}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
-                  >
-                    Test Notifications
-                  </Button>
-                  {notifications.length > 0 && (
-                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium text-burgundy-700">Found {notifications.length} notifications</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {notifications.map((notif: any) => (
-                          <Badge key={notif.id}>{notif.title}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2 text-black">Announcements</h3>
-                  <Button 
-                    onClick={testAnnouncements} 
-                    disabled={databaseLoading}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
-                  >
-                    Test Announcements
-                  </Button>
-                  {announcements.length > 0 && (
-                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium text-burgundy-700">Found {announcements.length} announcements</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {announcements.map((ann: any) => (
-                          <Badge key={ann.id}>{ann.title}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2 text-black">Supabase Connection</h3>
-                  <Button 
-                    onClick={testSupabaseConnection} 
-                    disabled={databaseLoading}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
-                  >
-                    Test Supabase Connection
-                  </Button>
-                  {!Array.isArray(databaseData) && databaseData.success !== undefined && (
-                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium text-burgundy-700">Supabase Connection: {databaseData.success ? 'Success' : 'Failed'}</p>
-                      {databaseData.message && (
-                        <p className="text-sm text-black">{databaseData.message}</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-          {activeTab === 'maintenance' && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-black">Test Maintenance API</h2>
-              <p className="mb-4 text-black">Test maintenance request operations</p>
-              
-              <div className="space-y-4">
-                <div>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        addLog('Fetching maintenance requests...')
-                        const res = await fetch('/api/maintenance')
-                        const data = await res.json()
-                        addLog(`✅ GET Success: Retrieved ${data.length} maintenance requests`)
-                      } catch (error: unknown) {
-                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
-                  >
-                    GET All
-                  </button>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2 text-black">Create New Request</h3>
-                  <button 
-                    onClick={testMaintenance}
-                      } catch (error: unknown) {
-                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
-                  >
-                    Create Request
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'notifications' && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-black">Test Notifications API</h2>
-              <p className="mb-4 text-black">Test notification operations</p>
-              
-              <div className="space-y-4">
-                <div>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        const userId = '00000000-0000-0000-0000-000000000003' // John Resident ID from schema.sql
-                        addLog(`Fetching notifications for user ${userId}...`)
-                        const res = await fetch(`/api/notifications?userId=${userId}`)
-                        const data = await res.json()
-                        addLog(`✅ GET Success: Retrieved ${data.length} notifications`)
-                      } catch (error: unknown) {
-                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
-                  >
-                    GET Notifications
-                  </button>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2 text-black">Create New Notification</h3>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        const newNotification = {
-                          userId: '00000000-0000-0000-0000-000000000003', // John Resident ID from schema.sql
-                          title: 'Test Notification',
-                          message: 'Created from test page'
-                        }
-                        
-                        addLog('Creating notification...')
-                        const res = await fetch('/api/notifications', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(newNotification)
-                        })
-                        
-                        const data = await res.json()
-                        addLog(`✅ POST Success: Created notification ${data.id}`)
-                      } catch (error: unknown) {
-                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
-                  >
-                    Create Notification
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'announcements' && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-black">Test Announcements API</h2>
-              <p className="mb-4 text-black">Test announcement operations</p>
-              
-              <div className="space-y-4">
-                <div>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        addLog('Fetching announcements...')
-                        const res = await fetch('/api/announcements')
-                        const data = await res.json()
-                        addLog(`✅ GET Success: Retrieved ${data.length} announcements`)
-                      } catch (error: unknown) {
-                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
-                  >
-                    GET All
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'pdf' && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-black">Test PDF Generation API</h2>
-              <p className="mb-4 text-black">Test PDF download functionality</p>
-              
-              <div className="space-y-4">
-                <div>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        addLog('Requesting PDF download...')
-                        const res = await fetch('/api/generate-report')
-                        
-                        if (res.ok) {
-                          addLog('✅ PDF download successful')
-                          // Create a blob from the PDF Stream
-                          const blob = await res.blob()
-                          // Create a link element to trigger download
-                          const link = document.createElement('a')
-                          link.href = URL.createObjectURL(blob)
-                          link.download = "strata-laws.pdf"
-                          document.body.appendChild(link)
-                          link.click()
-                          document.body.removeChild(link)
-                        } else {
-                          addLog(`❌ PDF download failed: ${res.status}`)
-                        }
-                      } catch (error: unknown) {
-                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
-                  >
-                    Download PDF
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Panel - Logs */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        
+        {/* Logs Panel */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-black">Test Logs</h2>
             <button 
