@@ -33,84 +33,82 @@ export default function MaintenancePage() {
       setLoading(true)
       console.log('Fetching maintenance requests...')
       
-      // First try to fetch from API with cache control
-      try {
-        const response = await fetch('/api/maintenance', {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        })
-        if (response.ok) {
-          const data = await response.json()
-          console.log('Fetched maintenance requests from API:', data)
-          
-          // Transform the data to match our interface
-          const formattedRequests = data.map((request: any) => ({
-            id: request.id,
-            title: request.title,
-            description: request.description,
-            unit: '101', // Default unit for consistency
-            status: request.status || 'pending',
-            priority: request.priority || 'medium',
-            category: request.category || 'general',
-            date: request.created_at ? new Date(request.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-            property: {
-              unit_number: '101',
-              address: '123 Sunset Blvd, Sydney, Unit 101'
-            }
-          }))
-          
-          setRequests(formattedRequests)
-          setLoading(false)
-          return
+      // Fetch from API with cache control
+      const response = await fetch('/api/maintenance', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
         }
-      } catch (apiError) {
-        console.error('Error fetching from API, falling back to Supabase:', apiError)
+      })
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`)
       }
       
-      // Fallback to direct Supabase query
-      const { data, error } = await supabase
-        .from('maintenance_requests')
-        .select(`
-          id,
-          title,
-          description,
-          status,
-          priority,
-          category,
-          created_at,
-          property:properties(unit_number, address)
-        `)
-        .order('created_at', { ascending: false })
+      const data = await response.json()
+      console.log('Fetched maintenance requests from API:', data)
       
-      if (error) {
-        throw error
+      if (!Array.isArray(data)) {
+        throw new Error('API did not return an array of maintenance requests')
       }
-      
-      console.log('Fetched maintenance requests from Supabase:', data)
       
       // Transform the data to match our interface
       const formattedRequests = data.map((request: any) => ({
         id: request.id,
         title: request.title,
         description: request.description,
-        unit: request.property ? request.property.unit_number : 'Unknown',
+        unit: '101', // Default unit for consistency
         status: request.status || 'pending',
         priority: request.priority || 'medium',
         category: request.category || 'general',
-        date: new Date(request.created_at).toISOString().split('T')[0],
-        property: request.property ? {
-          unit_number: request.property.unit_number,
-          address: request.property.address
-        } : undefined
+        date: request.created_at ? new Date(request.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        property: {
+          unit_number: '101',
+          address: '123 Sunset Blvd, Sydney, Unit 101'
+        }
       }))
       
       setRequests(formattedRequests)
     } catch (error) {
       console.error('Error fetching maintenance requests:', error)
       setError('Failed to load maintenance requests')
+      
+      // Only use mock data if we have no existing data
+      if (requests.length === 0) {
+        console.log('Using mock data as fallback')
+        const mockRequests: MaintenanceRequest[] = [
+          {
+            id: 'mock-1',
+            title: 'Demo Request 1',
+            description: 'This is a demo maintenance request',
+            unit: '101',
+            status: 'pending',
+            priority: 'medium',
+            category: 'general',
+            date: new Date().toISOString().split('T')[0],
+            property: {
+              unit_number: '101',
+              address: '123 Sunset Blvd, Sydney, Unit 101'
+            }
+          },
+          {
+            id: 'mock-2',
+            title: 'Demo Request 2',
+            description: 'Another demo maintenance request',
+            unit: '101',
+            status: 'in-progress',
+            priority: 'high',
+            category: 'plumbing',
+            date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+            property: {
+              unit_number: '101',
+              address: '123 Sunset Blvd, Sydney, Unit 101'
+            }
+          }
+        ]
+        setRequests(mockRequests)
+      }
     } finally {
       setLoading(false)
     }
@@ -188,10 +186,8 @@ export default function MaintenancePage() {
       // Show success message
       setSuccessMessage('Maintenance request created successfully!')
       
-      // Also refresh from server to ensure data consistency
-      setTimeout(() => {
-        fetchMaintenanceRequests()
-      }, 1000)
+      // No need to refresh from server as we've already added the request to the UI
+      // and the next time the page loads, it will fetch the latest data
       
       // Clear success message after 5 seconds
       setTimeout(() => {
