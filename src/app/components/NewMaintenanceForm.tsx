@@ -11,14 +11,40 @@ export default function NewMaintenanceForm({ onSubmit, onCancel }: NewMaintenanc
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    unit: '',
+    unit: '101', // Default to unit 101 which exists in our schema
     priority: 'medium',
     category: 'general'
   })
+  const [errors, setErrors] = useState<{[key: string]: string}>({})  
+
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {}
+    
+    if (!formData.title.trim()) {
+      newErrors.title = 'Title is required'
+    }
+    
+    if (!formData.description.trim()) {
+      newErrors.description = 'Description is required'
+    }
+    
+    if (!formData.unit.trim()) {
+      newErrors.unit = 'Unit is required'
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    
+    if (validateForm()) {
+      console.log('Submitting form data:', formData)
+      onSubmit(formData)
+    } else {
+      console.warn('Form validation failed:', errors)
+    }
   }
 
   return (
@@ -31,10 +57,16 @@ export default function NewMaintenanceForm({ onSubmit, onCancel }: NewMaintenanc
           type="text"
           id="title"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-burgundy-500 focus:ring-burgundy-500 sm:text-sm text-black"
+          onChange={(e) => {
+            setFormData({ ...formData, title: e.target.value })
+            if (errors.title) {
+              setErrors({ ...errors, title: '' })
+            }
+          }}
+          className={`mt-1 block w-full rounded-md shadow-sm focus:ring-burgundy-500 sm:text-sm text-black ${errors.title ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-burgundy-500'}`}
           required
         />
+        {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
       </div>
 
       <div>
@@ -44,25 +76,43 @@ export default function NewMaintenanceForm({ onSubmit, onCancel }: NewMaintenanc
         <textarea
           id="description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, description: e.target.value })
+            if (errors.description) {
+              setErrors({ ...errors, description: '' })
+            }
+          }}
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-burgundy-500 focus:ring-burgundy-500 sm:text-sm text-black"
+          className={`mt-1 block w-full rounded-md shadow-sm focus:ring-burgundy-500 sm:text-sm text-black ${errors.description ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-burgundy-500'}`}
           required
         />
+        {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
       </div>
 
       <div>
         <label htmlFor="unit" className="block text-sm font-medium text-black">
           Unit
         </label>
-        <input
-          type="text"
-          id="unit"
-          value={formData.unit}
-          onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-burgundy-500 focus:ring-burgundy-500 sm:text-sm text-black"
-          required
-        />
+        <div className="relative">
+          <input
+            type="text"
+            id="unit"
+            value={formData.unit}
+            onChange={(e) => {
+              setFormData({ ...formData, unit: e.target.value })
+              if (errors.unit) {
+                setErrors({ ...errors, unit: '' })
+              }
+            }}
+            className={`mt-1 block w-full rounded-md shadow-sm focus:ring-burgundy-500 sm:text-sm text-black ${errors.unit ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-burgundy-500'}`}
+            required
+          />
+          <div className="absolute inset-y-0 right-0 flex items-center px-2 mt-1">
+            <span className="text-xs text-gray-500">Default: 101</span>
+          </div>
+        </div>
+        {errors.unit && <p className="mt-1 text-sm text-red-600">{errors.unit}</p>}
+        <p className="mt-1 text-xs text-gray-500">Enter a valid unit number (e.g., 101, 102)</p>
       </div>
 
       <div>

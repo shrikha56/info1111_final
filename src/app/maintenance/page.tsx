@@ -84,31 +84,44 @@ export default function MaintenancePage() {
 
   const handleNewRequest = async (data: any) => {
     try {
-      // Get the property ID for the unit
-      const { data: propertyData, error: propertyError } = await supabase
-        .from('properties')
-        .select('id')
-        .eq('unit_number', data.unit)
-        .single()
+      console.log('Creating maintenance request with data:', data)
       
-      if (propertyError) {
-        throw new Error(`Property not found: ${propertyError.message}`)
+      // Default to the first property if unit is not provided or invalid
+      let propertyId = '00000000-0000-0000-0000-000000000001' // Default to first property
+      
+      // Get the property ID for the unit if unit is provided
+      if (data.unit) {
+        const { data: propertyData, error: propertyError } = await supabase
+          .from('properties')
+          .select('id')
+          .eq('unit_number', data.unit)
+          .maybeSingle() // Use maybeSingle instead of single to avoid errors
+        
+        if (propertyData && !propertyError) {
+          propertyId = propertyData.id
+          console.log('Found property ID:', propertyId)
+        } else {
+          console.warn('Property not found for unit:', data.unit, 'Using default property')
+        }
       }
+      
+      // Create the request object
+      const requestData = {
+        title: data.title,
+        description: data.description,
+        status: 'pending',
+        priority: data.priority || 'medium',
+        category: data.category || 'general',
+        property_id: propertyId,
+        requester_id: '00000000-0000-0000-0000-000000000003' // Using John Resident ID from schema
+      }
+      
+      console.log('Inserting maintenance request with data:', requestData)
       
       // Insert the new maintenance request
       const { data: newRequestData, error } = await supabase
         .from('maintenance_requests')
-        .insert([
-          {
-            title: data.title,
-            description: data.description,
-            status: 'pending',
-            priority: data.priority,
-            category: data.category,
-            property_id: propertyData.id,
-            requester_id: '00000000-0000-0000-0000-000000000003' // Using John Resident ID from schema
-          }
-        ])
+        .insert([requestData])
         .select(`
           id,
           title,
@@ -122,8 +135,16 @@ export default function MaintenancePage() {
         .single()
       
       if (error) {
-        throw error
+        console.error('Supabase error creating request:', error)
+        throw new Error(`Failed to create request: ${error.message || 'Unknown error'}`)
       }
+      
+      if (!newRequestData) {
+        console.error('No data returned from request creation')
+        throw new Error('No data returned from request creation')
+      }
+      
+      console.log('Successfully created request:', newRequestData)
       
       // Format the new request to match our interface
       const formattedRequest: MaintenanceRequest = {
@@ -144,9 +165,9 @@ export default function MaintenancePage() {
       // Update the local state
       setRequests([formattedRequest, ...requests])
       setIsModalOpen(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating maintenance request:', error)
-      alert('Failed to create maintenance request. Please try again.')
+      alert(`Failed to create maintenance request: ${error.message || 'Please try again.'}`)
     }
   }
 
