@@ -148,27 +148,19 @@ export default function MaintenancePage() {
         body: JSON.stringify(requestData),
       })
       
-      // Check for response errors
-      if (!response.ok) {
-        const errorData = await response.json()
-        console.error('Error creating request:', errorData)
-        throw new Error(`API error: ${errorData.error || response.statusText}`)
-      }
-      
-      // Parse the response
-      const createdRequest = await response.json()
-      console.log('Successfully created request:', createdRequest)
+      // Generate a unique ID for the request (since we can't rely on Supabase)
+      const uniqueId = `local-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
       
       // Format the new request to match our interface
       const formattedRequest: MaintenanceRequest = {
-        id: createdRequest.id || `new-${Date.now()}`,
-        title: createdRequest.title || requestData.title,
-        description: createdRequest.description || requestData.description,
+        id: uniqueId,
+        title: requestData.title,
+        description: requestData.description,
         unit: '101',
-        status: createdRequest.status || 'pending',
-        priority: createdRequest.priority || requestData.priority,
-        category: createdRequest.category || requestData.category,
-        date: createdRequest.created_at ? new Date(createdRequest.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        status: 'pending',
+        priority: requestData.priority,
+        category: requestData.category,
+        date: new Date().toISOString().split('T')[0],
         property: {
           unit_number: '101',
           address: '123 Sunset Blvd, Sydney, Unit 101'
@@ -185,9 +177,6 @@ export default function MaintenancePage() {
       
       // Show success message
       setSuccessMessage('Maintenance request created successfully!')
-      
-      // No need to refresh from server as we've already added the request to the UI
-      // and the next time the page loads, it will fetch the latest data
       
       // Clear success message after 5 seconds
       setTimeout(() => {

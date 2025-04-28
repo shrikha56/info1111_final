@@ -39,11 +39,11 @@ export async function GET() {
       .select('id, name, email, role')
       .limit(3);
       
-    // Check maintenance_requests table
+    // Check maintenance_requests table with all columns
     const { data: maintenanceData, error: maintenanceError } = await supabase
       .from('maintenance_requests')
-      .select('id, title, description, status')
-      .limit(3);
+      .select('*')
+      .order('created_at', { ascending: false });
       
     // Check announcements table
     const { data: announcementData, error: announcementError } = await supabase

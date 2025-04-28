@@ -16,26 +16,43 @@ export default function NewMaintenanceForm({ onSubmit, onCancel }: NewMaintenanc
     category: 'general'
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!formData.title.trim()) {
+      setError('Title is required')
+      return
+    }
+    
+    // Clear any previous errors
+    setError(null)
+    
+    // Set loading state
     setIsSubmitting(true)
     
+    // Prepare the data
+    const submitData = {
+      title: formData.title,
+      description: formData.description,
+      unit: formData.unit,
+      priority: formData.priority,
+      category: formData.category
+    }
+    
     try {
-      // Always use valid data with defaults
-      const submitData = {
-        title: formData.title || 'Maintenance Request',
-        description: formData.description || 'Please fix this issue',
-        unit: '101', // Always use 101 since we know it exists
-        priority: formData.priority || 'medium',
-        category: formData.category || 'general'
-      }
-      
-      console.log('Submitting maintenance request:', submitData)
+      // Submit the form data
       await onSubmit(submitData)
       
-      // Reset submission state after completion
-      setIsSubmitting(false)
+      // Reset the form
+      setFormData({
+        title: '',
+        description: '',
+        unit: '101',
+        priority: 'medium',
+        category: 'general'
+      })
     } catch (error) {
       console.error('Error in form submission:', error)
       alert('Error submitting form. Please try again.')
