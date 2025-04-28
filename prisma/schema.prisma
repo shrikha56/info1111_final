@@ -107,8 +107,10 @@ model Announcement {
   id            String    @id @default(cuid())
   title         String
   content       String
+  type          String    @default("general")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  expiresAt     DateTime?
   buildingId    String
   building      Building  @relation(fields: [buildingId], references: [id])
 }
