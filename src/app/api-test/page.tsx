@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -32,6 +33,9 @@ export default function ApiTestPage() {
 
   // Database test functions
   const testMaintenanceRequests = async () => {
+    setMaintenanceRequests([]);
+    setNotifications([]);
+    setAnnouncements([]);
     setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching maintenance requests...']);
     setDatabaseLoading(true);
     try {
@@ -39,6 +43,7 @@ export default function ApiTestPage() {
       const data = await response.json();
       setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} maintenance requests`]);
       setDatabaseData(data);
+      setMaintenanceRequests(Array.isArray(data) ? data : []);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
@@ -48,6 +53,9 @@ export default function ApiTestPage() {
   };
 
   const testNotifications = async () => {
+    setMaintenanceRequests([]);
+    setNotifications([]);
+    setAnnouncements([]);
     setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching notifications...']);
     setDatabaseLoading(true);
     try {
@@ -56,6 +64,7 @@ export default function ApiTestPage() {
       const data = await response.json();
       setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} notifications`]);
       setDatabaseData(data);
+      setNotifications(Array.isArray(data) ? data : []);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
@@ -65,6 +74,9 @@ export default function ApiTestPage() {
   };
 
   const testAnnouncements = async () => {
+    setMaintenanceRequests([]);
+    setNotifications([]);
+    setAnnouncements([]);
     setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching announcements...']);
     setDatabaseLoading(true);
     try {
@@ -72,6 +84,7 @@ export default function ApiTestPage() {
       const data = await response.json();
       setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} announcements`]);
       setDatabaseData(data);
+      setAnnouncements(Array.isArray(data) ? data : []);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
@@ -81,6 +94,9 @@ export default function ApiTestPage() {
   };
   
   const testSupabaseConnection = async () => {
+    setMaintenanceRequests([]);
+    setNotifications([]);
+    setAnnouncements([]);
     setDatabaseLogs((prev: string[]) => [...prev, '🔍 Testing Supabase connection...']);
     setDatabaseLoading(true);
     try {
@@ -166,12 +182,16 @@ export default function ApiTestPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="font-medium mb-2 text-black">Maintenance Requests</h3>
-                  <Button onClick={testMaintenanceRequests} disabled={databaseLoading}>
+                  <Button 
+                    onClick={testMaintenanceRequests} 
+                    disabled={databaseLoading}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
+                  >
                     Test Maintenance Requests
                   </Button>
                   {maintenanceRequests.length > 0 && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium">Found {maintenanceRequests.length} requests</p>
+                      <p className="font-medium text-burgundy-700">Found {maintenanceRequests.length} requests</p>
                       <div className="flex gap-2 flex-wrap">
                         {maintenanceRequests.map((req: any) => (
                           <Badge key={req.id}>{req.title}</Badge>
@@ -183,12 +203,16 @@ export default function ApiTestPage() {
                 
                 <div>
                   <h3 className="font-medium mb-2 text-black">Notifications</h3>
-                  <Button onClick={testNotifications} disabled={databaseLoading}>
+                  <Button 
+                    onClick={testNotifications} 
+                    disabled={databaseLoading}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
+                  >
                     Test Notifications
                   </Button>
                   {notifications.length > 0 && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium">Found {notifications.length} notifications</p>
+                      <p className="font-medium text-burgundy-700">Found {notifications.length} notifications</p>
                       <div className="flex gap-2 flex-wrap">
                         {notifications.map((notif: any) => (
                           <Badge key={notif.id}>{notif.title}</Badge>
@@ -200,12 +224,16 @@ export default function ApiTestPage() {
                 
                 <div>
                   <h3 className="font-medium mb-2 text-black">Announcements</h3>
-                  <Button onClick={testAnnouncements} disabled={databaseLoading}>
+                  <Button 
+                    onClick={testAnnouncements} 
+                    disabled={databaseLoading}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
+                  >
                     Test Announcements
                   </Button>
                   {announcements.length > 0 && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium">Found {announcements.length} announcements</p>
+                      <p className="font-medium text-burgundy-700">Found {announcements.length} announcements</p>
                       <div className="flex gap-2 flex-wrap">
                         {announcements.map((ann: any) => (
                           <Badge key={ann.id}>{ann.title}</Badge>
@@ -217,14 +245,18 @@ export default function ApiTestPage() {
                 
                 <div>
                   <h3 className="font-medium mb-2 text-black">Supabase Connection</h3>
-                  <Button onClick={testSupabaseConnection} disabled={databaseLoading}>
+                  <Button 
+                    onClick={testSupabaseConnection} 
+                    disabled={databaseLoading}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 hover:bg-burgundy-50"
+                  >
                     Test Supabase Connection
                   </Button>
                   {!Array.isArray(databaseData) && databaseData.success !== undefined && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
-                      <p className="font-medium">Supabase Connection: {databaseData.success ? 'Success' : 'Failed'}</p>
+                      <p className="font-medium text-burgundy-700">Supabase Connection: {databaseData.success ? 'Success' : 'Failed'}</p>
                       {databaseData.message && (
-                        <p className="text-sm text-gray-700">{databaseData.message}</p>
+                        <p className="text-sm text-black">{databaseData.message}</p>
                       )}
                     </div>
                   )}
@@ -437,7 +469,7 @@ export default function ApiTestPage() {
                         addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
                     }}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
                   >
                     Download PDF
                   </button>
