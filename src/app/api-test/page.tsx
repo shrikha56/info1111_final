@@ -60,7 +60,7 @@ export default function ApiTestPage() {
     setDatabaseLoading(true);
     try {
       // Using a mock user ID for testing
-      const response = await fetch('/api/notifications?userId=mock-user-1');
+      const response = await fetch('/api/notifications?userId=00000000-0000-0000-0000-000000000003');
       const data = await response.json();
       setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${Array.isArray(data) ? data.length : 0} notifications`]);
       setDatabaseData(data);
@@ -291,25 +291,7 @@ export default function ApiTestPage() {
                 <div>
                   <h3 className="font-medium mb-2 text-black">Create New Request</h3>
                   <button 
-                    onClick={async () => {
-                      try {
-                        const newRequest = {
-                          title: 'Test Maintenance Request',
-                          description: 'Created from test page',
-                          priority: 'medium',
-                          requesterId: 'clw5hqvxl0000ztfkgbkqvzwc', // John Resident ID
-                          propertyId: 'clw5hqvxm0002ztfkfz8k9j2t' // Property 101 ID
-                        }
-                        
-                        addLog('Creating maintenance request...')
-                        const res = await fetch('/api/maintenance', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(newRequest)
-                        })
-                        
-                        const data = await res.json()
-                        addLog(`✅ POST Success: Created request ${data.id}`)
+                    onClick={testMaintenance}
                       } catch (error: unknown) {
                         addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
                       }
@@ -333,7 +315,7 @@ export default function ApiTestPage() {
                   <button 
                     onClick={async () => {
                       try {
-                        const userId = 'clw5hqvxl0000ztfkgbkqvzwc' // John Resident ID
+                        const userId = '00000000-0000-0000-0000-000000000003' // John Resident ID from schema.sql
                         addLog(`Fetching notifications for user ${userId}...`)
                         const res = await fetch(`/api/notifications?userId=${userId}`)
                         const data = await res.json()
@@ -354,7 +336,7 @@ export default function ApiTestPage() {
                     onClick={async () => {
                       try {
                         const newNotification = {
-                          userId: 'clw5hqvxl0000ztfkgbkqvzwc', // John Resident ID
+                          userId: '00000000-0000-0000-0000-000000000003', // John Resident ID from schema.sql
                           title: 'Test Notification',
                           message: 'Created from test page'
                         }
@@ -402,36 +384,6 @@ export default function ApiTestPage() {
                     className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
                   >
                     GET All
-                  </button>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2 text-black">Create New Announcement</h3>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        const newAnnouncement = {
-                          title: 'Test Announcement',
-                          content: 'Created from test page',
-                          type: 'general'
-                        }
-                        
-                        addLog('Creating announcement...')
-                        const res = await fetch('/api/announcements', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(newAnnouncement)
-                        })
-                        
-                        const data = await res.json()
-                        addLog(`✅ POST Success: Created announcement ${data.id}`)
-                      } catch (error: unknown) {
-                        addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors"
-                  >
-                    Create Announcement
                   </button>
                 </div>
               </div>

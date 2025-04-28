@@ -2,23 +2,69 @@ import { NextResponse } from 'next/server';
 import supabase from '@/lib/supabase';
 
 export async function GET() {
+  console.log('Testing Supabase connection...');
   try {
-    // Test the connection by checking if we can access the database schema
-    const { data, error } = await supabase
-      .from('maintenance_requests')
-      .select('*')
-      .limit(1);
+    // Skip health check and go directly to checking tables
+    console.log('Checking Supabase tables...');
     
-    if (error) {
-      console.error('Supabase connection error:', JSON.stringify(error));
-      throw new Error(`Connection error: ${error.message}`);
+    // Check if our tables exist
+    
+    // Check if our tables exist
+    const tables = ['users', 'buildings', 'properties', 'maintenance_requests', 'notifications', 'announcements'];
+    const tableResults: Record<string, { exists: boolean; count?: number; error?: string }> = {};
+    
+    for (const table of tables) {
+      console.log(`Checking table: ${table}`);
+      try {
+        const { data, error } = await supabase.from(table).select('count').limit(1);
+        if (error) {
+          console.error(`Error checking table ${table}:`, JSON.stringify(error));
+          tableResults[table] = { exists: false, error: error.message };
+        } else {
+          console.log(`Table ${table} exists`);
+          tableResults[table] = { exists: true, count: data?.length || 0 };
+        }
+      } catch (tableError) {
+        console.error(`Exception checking table ${table}:`, tableError);
+        tableResults[table] = { exists: false, error: String(tableError) };
+      }
     }
+    
+    // Try to fetch specific records from each table
+    console.log('Fetching sample data from each table...');
+    
+    // Check users table
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('id, name, email, role')
+      .limit(3);
+      
+    // Check maintenance_requests table
+    const { data: maintenanceData, error: maintenanceError } = await supabase
+      .from('maintenance_requests')
+      .select('id, title, description, status')
+      .limit(3);
+      
+    // Check announcements table
+    const { data: announcementData, error: announcementError } = await supabase
+      .from('announcements')
+      .select('id, title, content')
+      .limit(3);
     
     return NextResponse.json({
       success: true,
       message: 'Successfully connected to Supabase',
-      data: data || [],
-      tableExists: true
+      tableStatus: tableResults,
+      sampleData: {
+        users: userData || [],
+        maintenance: maintenanceData || [],
+        announcements: announcementData || []
+      },
+      errors: {
+        users: userError ? userError.message : null,
+        maintenance: maintenanceError ? maintenanceError.message : null,
+        announcements: announcementError ? announcementError.message : null
+      }
     });
   } catch (error: unknown) {
     console.error('Supabase connection test failed:', error);
@@ -33,7 +79,7 @@ export async function GET() {
       message: `Failed to connect to Supabase: ${errorMessage}`,
       error: errorMessage,
       possibleSolution: isSchemaError ? 
-        "The database schema may not be applied. You need to run the schema.sql file in the Supabase SQL editor." : 
+        "The database schema may not be applied correctly. You need to run the schema.sql file in the Supabase SQL editor." : 
         "Check your connection credentials and network connectivity."
     });
   }

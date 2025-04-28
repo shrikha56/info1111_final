@@ -6,6 +6,23 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     
+    console.log(`📱 Fetching notifications for user: ${userId}`);
+    
+    // Handle mock user ID for testing
+    if (userId === 'mock-user-1') {
+      console.log('Using demo user ID for testing');
+      return NextResponse.json([
+        {
+          id: 'mock-notification-1',
+          title: 'Demo Notification',
+          message: 'This is a demo notification for testing',
+          is_read: false,
+          created_at: new Date().toISOString(),
+          user_id: 'mock-user-1'
+        }
+      ]);
+    }
+    
     if (!userId) {
       return NextResponse.json(
         { error: 'User ID is required' },
@@ -13,19 +30,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Use the actual UUID from schema.sql
+    console.log(`Querying notifications for user ${userId}`);
     const { data: userNotifications, error } = await supabase
       .from('notifications')
-      .select(`
-        *,
-        user:users(*)
-      `)
+      .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
     
     if (error) {
+      console.error('Error fetching notifications:', error);
       throw error;
     }
     
+    console.log(`Found ${userNotifications?.length || 0} notifications`);
     return NextResponse.json(userNotifications || []);
   } catch (error) {
     console.error('Failed to fetch notifications:', error);

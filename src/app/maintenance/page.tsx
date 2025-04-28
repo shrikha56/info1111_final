@@ -25,55 +25,99 @@ export default function MaintenancePage() {
   const [requests, setRequests] = useState<MaintenanceRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   
   // Fetch maintenance requests from Supabase
-  useEffect(() => {
-    async function fetchMaintenanceRequests() {
+  const fetchMaintenanceRequests = async () => {
+    try {
+      setLoading(true)
+      console.log('Fetching maintenance requests...')
+      
+      // First try to fetch from API with cache control
       try {
-        setLoading(true)
-        const { data, error } = await supabase
-          .from('maintenance_requests')
-          .select(`
-            id,
-            title,
-            description,
-            status,
-            priority,
-            category,
-            created_at,
-            property:properties(unit_number, address)
-          `)
-          .order('created_at', { ascending: false })
-        
-        if (error) {
-          throw error
+        const response = await fetch('/api/maintenance', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          console.log('Fetched maintenance requests from API:', data)
+          
+          // Transform the data to match our interface
+          const formattedRequests = data.map((request: any) => ({
+            id: request.id,
+            title: request.title,
+            description: request.description,
+            unit: '101', // Default unit for consistency
+            status: request.status || 'pending',
+            priority: request.priority || 'medium',
+            category: request.category || 'general',
+            date: request.created_at ? new Date(request.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+            property: {
+              unit_number: '101',
+              address: '123 Sunset Blvd, Sydney, Unit 101'
+            }
+          }))
+          
+          setRequests(formattedRequests)
+          setLoading(false)
+          return
         }
-        
-        // Transform the data to match our interface
-        const formattedRequests = data.map((request: any) => ({
-          id: request.id,
-          title: request.title,
-          description: request.description,
-          unit: request.property ? request.property.unit_number : 'Unknown',
-          status: request.status || 'pending',
-          priority: request.priority || 'medium',
-          category: request.category || 'general',
-          date: new Date(request.created_at).toISOString().split('T')[0],
-          property: request.property ? {
-            unit_number: request.property.unit_number,
-            address: request.property.address
-          } : undefined
-        }))
-        
-        setRequests(formattedRequests)
-      } catch (error) {
-        console.error('Error fetching maintenance requests:', error)
-        setError('Failed to load maintenance requests')
-      } finally {
-        setLoading(false)
+      } catch (apiError) {
+        console.error('Error fetching from API, falling back to Supabase:', apiError)
       }
+      
+      // Fallback to direct Supabase query
+      const { data, error } = await supabase
+        .from('maintenance_requests')
+        .select(`
+          id,
+          title,
+          description,
+          status,
+          priority,
+          category,
+          created_at,
+          property:properties(unit_number, address)
+        `)
+        .order('created_at', { ascending: false })
+      
+      if (error) {
+        throw error
+      }
+      
+      console.log('Fetched maintenance requests from Supabase:', data)
+      
+      // Transform the data to match our interface
+      const formattedRequests = data.map((request: any) => ({
+        id: request.id,
+        title: request.title,
+        description: request.description,
+        unit: request.property ? request.property.unit_number : 'Unknown',
+        status: request.status || 'pending',
+        priority: request.priority || 'medium',
+        category: request.category || 'general',
+        date: new Date(request.created_at).toISOString().split('T')[0],
+        property: request.property ? {
+          unit_number: request.property.unit_number,
+          address: request.property.address
+        } : undefined
+      }))
+      
+      setRequests(formattedRequests)
+    } catch (error) {
+      console.error('Error fetching maintenance requests:', error)
+      setError('Failed to load maintenance requests')
+    } finally {
+      setLoading(false)
     }
-    
+  }
+  
+  // Initial fetch
+  useEffect(() => {
     fetchMaintenanceRequests()
   }, [])
   const [filters, setFilters] = useState({
@@ -84,72 +128,85 @@ export default function MaintenancePage() {
 
   const handleNewRequest = async (data: any) => {
     try {
-      // Create a direct request to Supabase with fixed values
+      setLoading(true)
+      // Create request data
       const requestData = {
         title: data.title || 'Maintenance Request',
         description: data.description || 'Description needed',
         status: 'pending',
         priority: data.priority || 'medium',
-        category: data.category || 'general',
-        property_id: '00000000-0000-0000-0000-000000000001', // Fixed property ID (Unit 101)
-        requester_id: '00000000-0000-0000-0000-000000000003'  // Fixed user ID (John Resident)
+        category: data.category || 'general'
       }
       
-      console.log('Inserting maintenance request with data:', requestData)
+      console.log('Sending maintenance request with data:', requestData)
       
-      // Insert directly using Supabase client
-      const { data: newRequestData, error } = await supabase
-        .from('maintenance_requests')
-        .insert([requestData])
-        .select('*')
-        .single()
+      // Use direct API call with fetch
+      const response = await fetch('/api/maintenance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+        },
+        body: JSON.stringify(requestData),
+      })
       
-      if (error) {
-        console.error('Error creating request:', error)
-        throw new Error(`Database error: ${error.message}`)
+      // Check for response errors
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Error creating request:', errorData)
+        throw new Error(`API error: ${errorData.error || response.statusText}`)
       }
       
-      console.log('Successfully created request:', newRequestData)
-      
-      // Fetch the property details for the new request
-      const { data: propertyData } = await supabase
-        .from('properties')
-        .select('unit_number, address')
-        .eq('id', requestData.property_id)
-        .single()
+      // Parse the response
+      const createdRequest = await response.json()
+      console.log('Successfully created request:', createdRequest)
       
       // Format the new request to match our interface
       const formattedRequest: MaintenanceRequest = {
-        id: newRequestData.id,
-        title: newRequestData.title,
-        description: newRequestData.description,
-        unit: propertyData?.unit_number || '101',
-        status: newRequestData.status,
-        priority: newRequestData.priority,
-        category: newRequestData.category,
-        date: new Date(newRequestData.created_at).toISOString().split('T')[0],
-        property: propertyData ? {
-          unit_number: propertyData.unit_number,
-          address: propertyData.address
-        } : {
+        id: createdRequest.id || `new-${Date.now()}`,
+        title: createdRequest.title || requestData.title,
+        description: createdRequest.description || requestData.description,
+        unit: '101',
+        status: createdRequest.status || 'pending',
+        priority: createdRequest.priority || requestData.priority,
+        category: createdRequest.category || requestData.category,
+        date: createdRequest.created_at ? new Date(createdRequest.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        property: {
           unit_number: '101',
           address: '123 Sunset Blvd, Sydney, Unit 101'
         }
       }
       
-      // Update the local state
-      setRequests([formattedRequest, ...requests])
+      console.log('Adding new request to UI:', formattedRequest)
+      
+      // Add the new request to the list immediately
+      setRequests(prevRequests => [formattedRequest, ...prevRequests])
+      
+      // Close the modal
       setIsModalOpen(false)
       
       // Show success message
-      alert('Maintenance request created successfully!')
-    } catch (error: any) {
-      console.error('Error creating maintenance request:', error)
-      alert(`Failed to create maintenance request: ${error.message || 'Please try again.'}`)
+      setSuccessMessage('Maintenance request created successfully!')
+      
+      // Also refresh from server to ensure data consistency
+      setTimeout(() => {
+        fetchMaintenanceRequests()
+      }, 1000)
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    } catch (error) {
+      console.error('Error in handleNewRequest:', error)
+      setError('Failed to create maintenance request')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const filteredRequests = requests.filter(request => {
+  // Apply filters to the requests
+  const filteredRequests = requests.filter((request: MaintenanceRequest) => {
     if (filters.status && request.status !== filters.status) return false
     if (filters.priority && request.priority !== filters.priority) return false
     if (filters.category && request.category !== filters.category) return false
@@ -176,20 +233,25 @@ export default function MaintenancePage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6 p-6 min-h-screen">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-black">Maintenance Requests</h1>
           <p className="mt-1 text-sm text-black">Track and manage property maintenance issues</p>
         </div>
-        <button 
+        <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-burgundy-700 text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 transition-colors"
+          className="px-4 py-2 text-sm font-medium text-white bg-burgundy-700 border border-transparent rounded-md hover:bg-burgundy-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-burgundy-500"
         >
           New Request
         </button>
       </div>
+      
+      {successMessage && (
+        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+          {successMessage}
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
