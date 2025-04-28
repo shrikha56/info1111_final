@@ -10,10 +10,6 @@ if (!supabaseUrl || !supabaseKey) {
   );
 }
 
-// Create client with fallback for development without proper env vars
-const supabase = createClient(
-  supabaseUrl || 'https://placeholder-url.supabase.co',
-  supabaseKey || 'placeholder-key'
-);
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default supabase;
