@@ -17,7 +17,7 @@ export default function ApiTestPage() {
   const [notifications, setNotifications] = useState<any[]>([])
   const [announcements, setAnnouncements] = useState<any[]>([])
   const [databaseLoading, setDatabaseLoading] = useState(false);
-  const [databaseLogs, setDatabaseLogs] = useState<string[]>([]);
+  const [databaseLogs, setDatabaseLogs] = useState<Array<string>>([]);
   const [databaseData, setDatabaseData] = useState<any[]>([]);
 
   const addLog = (message: string) => {
@@ -30,68 +30,68 @@ export default function ApiTestPage() {
 
   // Database test functions
   const testMaintenanceRequests = async () => {
-    setDatabaseLogs(prev => [...prev, '🔍 Fetching maintenance requests...']);
+    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching maintenance requests...']);
     setDatabaseLoading(true);
     try {
       const response = await fetch('/api/maintenance');
       const data = await response.json();
-      setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} maintenance requests`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${data?.length || 0} maintenance requests`]);
       setDatabaseData(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
   };
 
   const testNotifications = async () => {
-    setDatabaseLogs(prev => [...prev, '🔍 Fetching notifications...']);
+    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching notifications...']);
     setDatabaseLoading(true);
     try {
       // Using a mock user ID for testing
       const response = await fetch('/api/notifications?userId=mock-user-1');
       const data = await response.json();
-      setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} notifications`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${data?.length || 0} notifications`]);
       setDatabaseData(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
   };
 
   const testAnnouncements = async () => {
-    setDatabaseLogs(prev => [...prev, '🔍 Fetching announcements...']);
+    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Fetching announcements...']);
     setDatabaseLoading(true);
     try {
       const response = await fetch('/api/announcements');
       const data = await response.json();
-      setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} announcements`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `✅ Received ${data?.length || 0} announcements`]);
       setDatabaseData(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
   };
   
   const testSupabaseConnection = async () => {
-    setDatabaseLogs(prev => [...prev, '🔍 Testing Supabase connection...']);
+    setDatabaseLogs((prev: string[]) => [...prev, '🔍 Testing Supabase connection...']);
     setDatabaseLoading(true);
     try {
       const response = await fetch('/api/test-supabase');
       const data = await response.json();
-      setDatabaseLogs(prev => [...prev, `✅ Supabase connection: ${data.success ? 'Success' : 'Failed'}`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `✅ Supabase connection: ${data.success ? 'Success' : 'Failed'}`]);
       if (data.message) {
-        setDatabaseLogs(prev => [...prev, `ℹ️ ${data.message}`]);
+        setDatabaseLogs((prev: string[]) => [...prev, `ℹ️ ${data.message}`]);
       }
       setDatabaseData(data);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      setDatabaseLogs(prev => [...prev, `❌ Error: ${errorMessage}`]);
+      setDatabaseLogs((prev: string[]) => [...prev, `❌ Error: ${errorMessage}`]);
     } finally {
       setDatabaseLoading(false);
     }
