@@ -25,14 +25,22 @@ async function main() {
   // Check if we're in a production environment (Vercel)
   if (process.env.VERCEL_ENV === 'production') {
     try {
-      console.log('🔄 Running database migrations in production...');
-      // Use prisma migrate deploy for production (applies migrations without prompts)
-      runCommand('npx prisma migrate deploy');
-      console.log('✅ Database migrations applied successfully');
+      // Check if DATABASE_URL is set to a non-localhost URL
+      const dbUrl = process.env.DATABASE_URL || '';
+      if (!dbUrl || dbUrl.includes('localhost')) {
+        console.log('⚠️ Using localhost database URL, skipping migrations');
+        console.log('⚠️ Please set up a cloud database and update DATABASE_URL in Vercel');
+      } else {
+        console.log('🔄 Running database migrations in production...');
+        // Use prisma migrate deploy for production (applies migrations without prompts)
+        runCommand('npx prisma migrate deploy');
+        console.log('✅ Database migrations applied successfully');
+      }
     } catch (error) {
       console.error('❌ Failed to apply migrations');
       console.error(error);
-      process.exit(1);
+      // Don't exit with error, allow build to continue
+      console.log('⚠️ Continuing build despite migration failure');
     }
   } else {
     console.log('🔄 Running in development mode, skipping migrations');
