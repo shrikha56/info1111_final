@@ -6,11 +6,15 @@ ON maintenance_requests
 FOR SELECT
 USING (true);
 
--- Policy to allow users to insert their own maintenance requests
-CREATE POLICY "Allow users to insert maintenance requests"
+-- Policy to allow anyone to insert maintenance requests (for demo purposes)
+CREATE POLICY "Allow anyone to insert maintenance requests"
 ON maintenance_requests
 FOR INSERT
 WITH CHECK (true);
+
+-- Explicitly enable RLS but make it permissive for inserts
+ALTER TABLE maintenance_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE maintenance_requests FORCE ROW LEVEL SECURITY;
 
 -- Policy to allow users to update their own maintenance requests
 CREATE POLICY "Allow users to update their own maintenance requests"

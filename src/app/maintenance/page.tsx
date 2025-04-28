@@ -138,8 +138,8 @@ export default function MaintenancePage() {
       
       console.log('Sending maintenance request with data:', requestData)
       
-      // Use direct API call with fetch
-      const response = await fetch('/api/maintenance', {
+      // Try the admin API endpoint first
+      const response = await fetch('/api/admin-maintenance', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,19 +148,20 @@ export default function MaintenancePage() {
         body: JSON.stringify(requestData),
       })
       
-      // Generate a unique ID for the request (since we can't rely on Supabase)
-      const uniqueId = `local-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+      // Parse the response
+      const responseData = await response.json()
+      console.log('API response:', responseData)
       
       // Format the new request to match our interface
       const formattedRequest: MaintenanceRequest = {
-        id: uniqueId,
-        title: requestData.title,
-        description: requestData.description,
+        id: responseData.id || `local-${Date.now()}`,
+        title: responseData.title || requestData.title,
+        description: responseData.description || requestData.description,
         unit: '101',
-        status: 'pending',
-        priority: requestData.priority,
-        category: requestData.category,
-        date: new Date().toISOString().split('T')[0],
+        status: responseData.status || 'pending',
+        priority: responseData.priority || requestData.priority,
+        category: responseData.category || requestData.category,
+        date: responseData.created_at ? new Date(responseData.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         property: {
           unit_number: '101',
           address: '123 Sunset Blvd, Sydney, Unit 101'
