@@ -19,12 +19,13 @@ export async function GET() {
       message: 'Successfully connected to Supabase',
       data
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Supabase connection test failed:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return NextResponse.json({
       success: false,
-      message: `Failed to connect to Supabase: ${error.message}`,
-      error: error.message
+      message: `Failed to connect to Supabase: ${errorMessage}`,
+      error: errorMessage
     });
   }
 }
