@@ -13,12 +13,12 @@ import { BeakerIcon, DocumentTextIcon, BellIcon, WrenchScrewdriverIcon } from '@
 export default function ApiTestPage() {
   const [activeTab, setActiveTab] = useState('database')
   const [logs, setLogs] = useState<string[]>([])
-  const [maintenanceRequests, setMaintenanceRequests] = useState([])
-  const [notifications, setNotifications] = useState([])
-  const [announcements, setAnnouncements] = useState([])
+  const [maintenanceRequests, setMaintenanceRequests] = useState<any[]>([])
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [announcements, setAnnouncements] = useState<any[]>([])
   const [databaseLoading, setDatabaseLoading] = useState(false);
-  const [databaseLogs, setDatabaseLogs] = useState([]);
-  const [databaseData, setDatabaseData] = useState([]);
+  const [databaseLogs, setDatabaseLogs] = useState<string[]>([]);
+  const [databaseData, setDatabaseData] = useState<any[]>([]);
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
