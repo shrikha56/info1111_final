@@ -32,7 +32,7 @@
     }
   ],
   "regions": ["syd1"],
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run vercel-build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
   "env": {
@@ -41,7 +41,8 @@
     "NEXTAUTH_URL": "https://info1111final.vercel.app",
     "NEXT_PUBLIC_API_URL": "https://info1111final.vercel.app/api",
     "NEXT_PUBLIC_ENABLE_ANALYTICS": "true",
-    "NEXT_PUBLIC_ENABLE_MAINTENANCE_MODE": "false"
+    "NEXT_PUBLIC_ENABLE_MAINTENANCE_MODE": "false",
+    "DATABASE_URL": "${DATABASE_URL}"
   },
   "github": {
     "silent": true,
