@@ -38,12 +38,12 @@
   "env": {
     "NEXT_PUBLIC_ENABLE_NOTIFICATIONS": "true",
     "NEXTAUTH_SECRET": "${NEXTAUTH_SECRET}",
-    "NEXTAUTH_URL": "https://info1111final.vercel.app",
-    "NEXT_PUBLIC_API_URL": "https://info1111final.vercel.app/api",
+    "NEXTAUTH_URL": "https://info1111-final.vercel.app",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://jsljlojidfkigqfaqscy.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "${NEXT_PUBLIC_SUPABASE_ANON_KEY}",
     "NEXT_PUBLIC_ENABLE_ANALYTICS": "true",
     "NEXT_PUBLIC_ENABLE_MAINTENANCE_MODE": "false",
-    "DATABASE_URL": "${DATABASE_URL}",
-    "NEXT_PUBLIC_DATABASE_ENABLED": "true"
+    "DIRECT_URL": "postgresql://postgres:Pepper@0566@db.jsljlojidfkigqfaqscy.supabase.co:5432/postgres"
   },
   "github": {
     "silent": true,

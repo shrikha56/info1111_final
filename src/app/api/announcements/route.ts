@@ -1,66 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import supabase from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   console.log('📣 Fetching announcements...');
   try {
-    // Check if we're in a deployment without a database connection
-    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('localhost')) {
-      // Return mock data for demo purposes
-      console.log('⚠️ No database connection, returning mock announcements');
-      return NextResponse.json([
-        {
-          id: 'mock-ann-1',
-          title: 'Building Maintenance Notice',
-          content: 'This is a demo announcement when no database is available',
-          type: 'general',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          buildingId: 'mock-building'
-        },
-        {
-          id: 'mock-ann-2',
-          title: 'Annual General Meeting',
-          content: 'The annual general meeting will be held next month',
-          type: 'general',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          buildingId: 'mock-building'
-        }
-      ]);
-    }
-    
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     
     console.log(`🔍 Filter type: ${type || 'none'}`);
     
-    // Build the where clause for Prisma query
-    const whereClause: any = {};
+    // Build the query
+    let query = supabase
+      .from('announcements')
+      .select(`
+        *,
+        building:buildings(*)
+      `)
+      .order('created_at', { ascending: false });
     
     // Filter by type if specified
     if (type) {
-      whereClause.type = type;
+      query = query.eq('type', type);
       console.log(`🔍 Filtering announcements of type: ${type}`);
     }
     
     // Filter out expired announcements
-    const now = new Date();
-    whereClause.OR = [
-      { expiresAt: null },
-      { expiresAt: { gt: now } }
-    ];
+    const now = new Date().toISOString();
+    query = query.or(`expires_at.is.null,expires_at.gt.${now}`);
     
-    // Query the database
-    const announcements = await prisma.announcement.findMany({
-      where: whereClause,
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+    // Execute the query
+    const { data: announcements, error } = await query;
     
-    console.log(`✅ Returning ${announcements.length} active announcements`);
-    return NextResponse.json(announcements);
+    if (error) {
+      throw error;
+    }
+    
+    console.log(`✅ Returning ${announcements?.length || 0} active announcements`);
+    return NextResponse.json(announcements || []);
   } catch (error) {
     console.error('Failed to fetch announcements:', error);
     // Return mock data in case of error
@@ -70,9 +46,9 @@ export async function GET(request: NextRequest) {
         title: 'Demo Announcement (Database Error)',
         content: 'This is shown when the database connection fails',
         type: 'general',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        buildingId: 'mock-building'
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        building: { id: 'mock-building', name: 'Mock Building' }
       }
     ]);
   }
@@ -84,33 +60,27 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     console.log('📦 Received announcement data:', data);
     
-    // Check if we're in a deployment without a database connection
-    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('localhost')) {
-      // Return mock data for demo purposes
-      console.log('⚠️ No database connection, returning mock announcement');
-      return NextResponse.json({
-        id: 'mock-new-ann',
-        title: data.title || 'Demo Announcement',
-        content: data.content || 'This is a demo announcement created without a database',
-        type: data.type || 'general',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        buildingId: 'mock-building'
-      }, { status: 201 });
-    }
-    
     // Create announcement in the database
-    const newAnnouncement = await prisma.announcement.create({
-      data: {
-        title: data.title,
-        content: data.content,
-        type: data.type || 'general',
-        expiresAt: data.expiresAt ? new Date(data.expiresAt) : null,
-        building: {
-          connect: { id: data.buildingId || (await prisma.building.findFirst()).id }
+    const { data: newAnnouncement, error } = await supabase
+      .from('announcements')
+      .insert([
+        {
+          title: data.title,
+          content: data.content,
+          type: data.type || 'general',
+          expires_at: data.expiresAt ? new Date(data.expiresAt).toISOString() : null,
+          building_id: data.buildingId
         }
-      }
-    });
+      ])
+      .select(`
+        *,
+        building:buildings(*)
+      `)
+      .single();
+    
+    if (error) {
+      throw error;
+    }
 
     console.log(`✅ Created announcement with ID: ${newAnnouncement.id}`);
     return NextResponse.json(newAnnouncement, { status: 201 });
@@ -122,9 +92,9 @@ export async function POST(request: NextRequest) {
       title: 'Demo Announcement (Error)',
       content: 'This is shown when the database connection fails',
       type: 'general',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      buildingId: 'mock-building'
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      building: { id: 'mock-building', name: 'Mock Building' }
     }, { status: 201 });
   }
 }
@@ -145,11 +115,13 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Check if announcement exists
-    const announcement = await prisma.announcement.findUnique({
-      where: { id }
-    });
+    const { data: announcement, error: findError } = await supabase
+      .from('announcements')
+      .select('id')
+      .eq('id', id)
+      .single();
     
-    if (!announcement) {
+    if (findError || !announcement) {
       console.log(`❌ Error: Announcement with ID ${id} not found`);
       return NextResponse.json(
         { error: 'Announcement not found' },
@@ -158,9 +130,14 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete the announcement from the database
-    await prisma.announcement.delete({
-      where: { id }
-    });
+    const { error } = await supabase
+      .from('announcements')
+      .delete()
+      .eq('id', id);
+      
+    if (error) {
+      throw error;
+    }
     
     console.log(`✅ Successfully deleted announcement with ID: ${id}`);
     return NextResponse.json({ success: true });

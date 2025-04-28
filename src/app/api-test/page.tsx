@@ -1,6 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { Loader2 } from "lucide-react";
 import { BeakerIcon, DocumentTextIcon, BellIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 
 export default function ApiTestPage() {
@@ -9,6 +16,9 @@ export default function ApiTestPage() {
   const [maintenanceRequests, setMaintenanceRequests] = useState([])
   const [notifications, setNotifications] = useState([])
   const [announcements, setAnnouncements] = useState([])
+  const [databaseLoading, setDatabaseLoading] = useState(false);
+  const [databaseLogs, setDatabaseLogs] = useState([]);
+  const [databaseData, setDatabaseData] = useState([]);
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
@@ -17,6 +27,71 @@ export default function ApiTestPage() {
   const clearLogs = () => {
     setLogs([])
   }
+
+  // Database test functions
+  const testMaintenanceRequests = async () => {
+    setDatabaseLogs(prev => [...prev, '🔍 Fetching maintenance requests...']);
+    setDatabaseLoading(true);
+    try {
+      const response = await fetch('/api/maintenance');
+      const data = await response.json();
+      setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} maintenance requests`]);
+      setDatabaseData(data);
+    } catch (error) {
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+    } finally {
+      setDatabaseLoading(false);
+    }
+  };
+
+  const testNotifications = async () => {
+    setDatabaseLogs(prev => [...prev, '🔍 Fetching notifications...']);
+    setDatabaseLoading(true);
+    try {
+      // Using a mock user ID for testing
+      const response = await fetch('/api/notifications?userId=mock-user-1');
+      const data = await response.json();
+      setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} notifications`]);
+      setDatabaseData(data);
+    } catch (error) {
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+    } finally {
+      setDatabaseLoading(false);
+    }
+  };
+
+  const testAnnouncements = async () => {
+    setDatabaseLogs(prev => [...prev, '🔍 Fetching announcements...']);
+    setDatabaseLoading(true);
+    try {
+      const response = await fetch('/api/announcements');
+      const data = await response.json();
+      setDatabaseLogs(prev => [...prev, `✅ Received ${data?.length || 0} announcements`]);
+      setDatabaseData(data);
+    } catch (error) {
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+    } finally {
+      setDatabaseLoading(false);
+    }
+  };
+  
+  const testSupabaseConnection = async () => {
+    setDatabaseLogs(prev => [...prev, '🔍 Testing Supabase connection...']);
+    setDatabaseLoading(true);
+    try {
+      const response = await fetch('/api/test-supabase');
+      const data = await response.json();
+      setDatabaseLogs(prev => [...prev, `✅ Supabase connection: ${data.success ? 'Success' : 'Failed'}`]);
+      if (data.message) {
+        setDatabaseLogs(prev => [...prev, `ℹ️ ${data.message}`]);
+      }
+      setDatabaseData(data);
+    } catch (error) {
+      setDatabaseLogs(prev => [...prev, `❌ Error: ${error.message}`]);
+    } finally {
+      setDatabaseLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -85,97 +160,66 @@ export default function ApiTestPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="font-medium mb-2 text-black">Maintenance Requests</h3>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        addLog('Fetching maintenance requests from database...')
-                        const res = await fetch('/api/maintenance')
-                        const data = await res.json()
-                        setMaintenanceRequests(data)
-                        addLog(`✅ GET Success: Retrieved ${data.length} maintenance requests`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
-                  >
-                    Fetch Maintenance Requests
-                  </button>
+                  <Button onClick={testMaintenanceRequests} disabled={databaseLoading}>
+                    Test Maintenance Requests
+                  </Button>
                   {maintenanceRequests.length > 0 && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
                       <p className="font-medium">Found {maintenanceRequests.length} requests</p>
-                      <ul className="mt-2 text-sm space-y-1">
+                      <div className="flex gap-2 flex-wrap">
                         {maintenanceRequests.map((req: any) => (
-                          <li key={req.id}>
-                            <span className="font-medium">{req.title}</span> - {req.status}
-                          </li>
+                          <Badge key={req.id}>{req.title}</Badge>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                 </div>
                 
                 <div>
                   <h3 className="font-medium mb-2 text-black">Notifications</h3>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        const userId = 'clw5hqvxl0000ztfkgbkqvzwc' // John Resident ID from seed
-                        addLog(`Fetching notifications for user ${userId}...`)
-                        const res = await fetch(`/api/notifications?userId=${userId}`)
-                        const data = await res.json()
-                        setNotifications(data)
-                        addLog(`✅ GET Success: Retrieved ${data.length} notifications`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
-                  >
-                    Fetch Notifications
-                  </button>
+                  <Button onClick={testNotifications} disabled={databaseLoading}>
+                    Test Notifications
+                  </Button>
                   {notifications.length > 0 && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
                       <p className="font-medium">Found {notifications.length} notifications</p>
-                      <ul className="mt-2 text-sm space-y-1">
+                      <div className="flex gap-2 flex-wrap">
                         {notifications.map((notif: any) => (
-                          <li key={notif.id}>
-                            <span className="font-medium">{notif.title}</span>
-                          </li>
+                          <Badge key={notif.id}>{notif.title}</Badge>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                 </div>
                 
                 <div>
                   <h3 className="font-medium mb-2 text-black">Announcements</h3>
-                  <button 
-                    onClick={async () => {
-                      try {
-                        addLog('Fetching announcements from database...')
-                        const res = await fetch('/api/announcements')
-                        const data = await res.json()
-                        setAnnouncements(data)
-                        addLog(`✅ GET Success: Retrieved ${data.length} announcements`)
-                      } catch (error) {
-                        addLog(`❌ Error: ${error}`)
-                      }
-                    }}
-                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors mr-2"
-                  >
-                    Fetch Announcements
-                  </button>
+                  <Button onClick={testAnnouncements} disabled={databaseLoading}>
+                    Test Announcements
+                  </Button>
                   {announcements.length > 0 && (
                     <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
                       <p className="font-medium">Found {announcements.length} announcements</p>
-                      <ul className="mt-2 text-sm space-y-1">
+                      <div className="flex gap-2 flex-wrap">
                         {announcements.map((ann: any) => (
-                          <li key={ann.id}>
-                            <span className="font-medium">{ann.title}</span>
-                          </li>
+                          <Badge key={ann.id}>{ann.title}</Badge>
                         ))}
-                      </ul>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div>
+                  <h3 className="font-medium mb-2 text-black">Supabase Connection</h3>
+                  <Button onClick={testSupabaseConnection} disabled={databaseLoading}>
+                    Test Supabase Connection
+                  </Button>
+                  {databaseData.success !== undefined && (
+                    <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                      <p className="font-medium">Supabase Connection: {databaseData.success ? 'Success' : 'Failed'}</p>
+                      {databaseData.message && (
+                        <p className="text-sm text-gray-700">{databaseData.message}</p>
+                      )}
                     </div>
                   )}
                 </div>
