@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:pepper@localhost:5432/strata_management?schema=public"
+}
+
+// User model for authentication and user management
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  role          UserRole  @default(RESIDENT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  property      Property?  @relation(fields: [propertyId], references: [id])
+  propertyId    String?
+  maintenanceRequests MaintenanceRequest[] @relation("RequestedBy")
+  assignedRequests    MaintenanceRequest[] @relation("AssignedTo")
+  notifications       Notification[]
+}
+
+enum UserRole {
+  ADMIN
+  PROPERTY_MANAGER
+  MAINTENANCE_STAFF
+  RESIDENT
+}
+
+// Property model for strata properties
+model Property {
+  id            String    @id @default(cuid())
+  unitNumber    String
+  address       String
+  buildingId    String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  users         User[]
+  maintenanceRequests MaintenanceRequest[]
+  building      Building  @relation(fields: [buildingId], references: [id])
+}
+
+// Building model for strata buildings
+model Building {
+  id            String    @id @default(cuid())
+  name          String
+  address       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  properties    Property[]
+  announcements Announcement[]
+}
+
+// MaintenanceRequest model for maintenance requests
+model MaintenanceRequest {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  status        RequestStatus @default(PENDING)
+  priority      Priority  @default(MEDIUM)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  completedAt   DateTime?
+  requesterId   String
+  assigneeId    String?
+  propertyId    String
+  images        String[]  // URLs to images
+  requester     User      @relation("RequestedBy", fields: [requesterId], references: [id])
+  assignee      User?     @relation("AssignedTo", fields: [assigneeId], references: [id])
+  property      Property  @relation(fields: [propertyId], references: [id])
+  comments      Comment[]
+}
+
+enum RequestStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// Comment model for maintenance request comments
+model Comment {
+  id            String    @id @default(cuid())
+  content       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  requestId     String
+  userId        String
+  request       MaintenanceRequest @relation(fields: [requestId], references: [id])
+}
+
+// Announcement model for building announcements
+model Announcement {
+  id            String    @id @default(cuid())
+  title         String
+  content       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  buildingId    String
+  building      Building  @relation(fields: [buildingId], references: [id])
+}
+
+// Notification model for user notifications
+model Notification {
+  id            String    @id @default(cuid())
+  title         String
+  message       String
+  isRead        Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
