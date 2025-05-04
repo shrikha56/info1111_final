@@ -50,6 +50,9 @@
     "autoJobCancelation": true
   },
   "functions": {
+    "api/*.php": {
+      "runtime": "vercel-php@0.7.3"
+    },
     "src/app/api/generate-report/*.ts": {
       "memory": 1024,
       "maxDuration": 60
