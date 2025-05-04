@@ -131,6 +131,9 @@ echo '<!DOCTYPE html>
     <div class="container">
         <h1>Strata Management Portal</h1>
         <p>PHP-based strata management interface running on Vercel</p>
+        <div class="mt-4">
+            <a href="/" class="button">Return to Main Dashboard</a>
+        </div>
         
         <div class="info-box">
             <h2>Properties Overview</h2>';

@@ -176,7 +176,10 @@ export default function Home() {
                 <h1 className="text-4xl font-bold text-white">Welcome back, Admin</h1>
                 <p className="mt-2 text-burgundy-100 text-lg">Here's what's happening with your properties today</p>
               </div>
-              <div className="mt-4 md:mt-0">
+              <div className="mt-4 md:mt-0 space-x-3">
+                <a href="/api" target="_blank" className="inline-block bg-white text-burgundy-700 px-6 py-2 rounded-lg font-medium hover:bg-burgundy-50 transition-colors">
+                  PHP Strata Manager
+                </a>
                 <a href="/nsw.gov.au-Changes to strata laws.pdf" target="_blank" className="inline-block bg-white text-burgundy-700 px-6 py-2 rounded-lg font-medium hover:bg-burgundy-50 transition-colors">
                   View Strata Laws
                 </a>
