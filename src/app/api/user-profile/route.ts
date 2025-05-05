@@ -225,15 +225,34 @@ export async function GET(request: NextRequest) {
     }
     
     // Format and return the complete user profile data
-    const typedUserData = userData as UserData;
+    // Map userData to match the UserData interface
+    const mappedUserData = {
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+      created_at: userData.created_at,
+      properties: userData.properties?.map(prop => ({
+        property: {
+          id: prop.property?.[0]?.id || '',
+          unit_number: prop.property?.[0]?.unit_number || '',
+          address: prop.property?.[0]?.address || '',
+          building: {
+            id: prop.property?.[0]?.building?.[0]?.id || '',
+            name: prop.property?.[0]?.building?.[0]?.name || ''
+          }
+        }
+      })) || []
+    };
+    
     return NextResponse.json({
       user: {
-        id: typedUserData.id,
-        name: typedUserData.name,
-        email: typedUserData.email,
-        role: typedUserData.role,
-        created_at: typedUserData.created_at,
-        properties: typedUserData.properties?.map((item) => item.property).filter(Boolean) || []
+        id: mappedUserData.id,
+        name: mappedUserData.name,
+        email: mappedUserData.email,
+        role: mappedUserData.role,
+        created_at: mappedUserData.created_at,
+        properties: mappedUserData.properties.map(item => item.property).filter(Boolean) || []
       },
       maintenanceRequests: maintenanceRequests,
       notifications: notifications
