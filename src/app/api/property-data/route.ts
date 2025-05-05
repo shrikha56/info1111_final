@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import supabase from '@/lib/supabase';
 
 // Define route segment config for static rendering
 export const dynamic = 'force-dynamic';
@@ -34,30 +33,7 @@ const fallbackProperties = [
 
 export async function GET() {
   try {
-    console.log('Fetching properties from Supabase...');
-    
-    // Fetch properties from Supabase
-    // First, let's check the structure of the properties table
-    console.log('Checking properties table structure...');
-    const { data: tableInfo, error: tableError } = await supabase
-      .from('properties')
-      .select('*')
-      .limit(1);
-      
-    if (tableError) {
-      console.error('Error checking properties table:', tableError);
-      throw tableError;
-    }
-    
-    console.log('Properties table first row:', tableInfo);
-    
-    // Use fallback data for now until we determine the correct column names
-    const properties = fallbackProperties;
-    
-    // No need to check for error since we're using fallback data directly
-    
-    // For now, use the fallback properties directly
-    // We'll update this once we determine the correct column structure
+    // Use hardcoded properties data
     const finalProperties = fallbackProperties;
     
     // Calculate summary statistics
