@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
+import supabase from '@/lib/supabase';
 
 // Define route segment config for static rendering
 export const dynamic = 'force-dynamic';
 
-// Sample strata management data from the PHP file
-const properties = [
+// Fallback property data in case database connection fails
+const fallbackProperties = [
   {
     id: 'prop-001',
     name: 'Sunset Heights',
@@ -33,23 +34,63 @@ const properties = [
 
 export async function GET() {
   try {
+    console.log('Fetching properties from Supabase...');
+    
+    // Fetch properties from Supabase
+    const { data: properties, error } = await supabase
+      .from('properties')
+      .select(`
+        id,
+        name,
+        address,
+        units,
+        last_inspection
+      `);
+    
+    if (error) {
+      console.error('Error fetching properties from Supabase:', error);
+      throw error;
+    }
+    
+    // Fetch maintenance requests count for each property
+    const propertiesWithMaintenance = await Promise.all(
+      properties.map(async (property) => {
+        const { count, error: countError } = await supabase
+          .from('maintenance_requests')
+          .select('id', { count: 'exact' })
+          .eq('property_id', property.id);
+        
+        if (countError) {
+          console.warn(`Error fetching maintenance requests for property ${property.id}:`, countError);
+          return { ...property, maintenance_requests: 0 };
+        }
+        
+        return { ...property, maintenance_requests: count || 0 };
+      })
+    );
+    
+    // If no properties were found, use fallback data
+    const finalProperties = propertiesWithMaintenance.length > 0 
+      ? propertiesWithMaintenance 
+      : fallbackProperties;
+    
     // Calculate summary statistics
-    const totalProperties = properties.length;
-    const totalUnits = properties.reduce((sum, property) => sum + property.units, 0);
-    const totalMaintenanceRequests = properties.reduce(
+    const totalProperties = finalProperties.length;
+    const totalUnits = finalProperties.reduce((sum, property) => sum + property.units, 0);
+    const totalMaintenanceRequests = finalProperties.reduce(
       (sum, property) => sum + property.maintenance_requests, 
       0
     );
     
     // Return the property data and summary statistics
     return NextResponse.json({
-      properties,
+      properties: finalProperties,
       summary: {
         totalProperties,
         totalUnits,
         totalMaintenanceRequests,
-        averageUnitsPerProperty: Math.round(totalUnits / totalProperties),
-        averageMaintenancePerProperty: (totalMaintenanceRequests / totalProperties).toFixed(1)
+        averageUnitsPerProperty: totalProperties > 0 ? Math.round(totalUnits / totalProperties) : 0,
+        averageMaintenancePerProperty: totalProperties > 0 ? (totalMaintenanceRequests / totalProperties).toFixed(1) : '0.0'
       }
     });
   } catch (error) {

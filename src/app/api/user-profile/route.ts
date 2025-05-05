@@ -421,10 +421,6 @@ export async function PUT(request: NextRequest) {
     
     // Return success response with the updated data
     return NextResponse.json(updatedUser);
-    } catch (error) {
-      console.error('Unexpected error in user profile update:', error);
-      return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
-    }
   } catch (error) {
     console.error('Error in user profile update API:', error);
     return NextResponse.json({ error: 'Failed to update user profile' }, { status: 500 });

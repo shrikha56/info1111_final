@@ -222,7 +222,7 @@ export default function DashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <a 
-                        href={`/api/index.php?property_id=${property.id}`}
+                        href={`/api/property.php?id=${property.id}`}
                         target="_blank"
                         className={`text-burgundy-700 hover:text-burgundy-900 ${robotoMono.className}`}
                       >
