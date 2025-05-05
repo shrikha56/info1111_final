@@ -129,6 +129,12 @@ export default function ProfilePage() {
     
     try {
       setSaveStatus('saving')
+      console.log('Updating profile with data:', {
+        id: profile.user.id,
+        name: formData.name,
+        email: formData.email,
+        role: profile.user.role
+      })
       
       // Make the API call to update the profile in Supabase
       const response = await fetch('/api/user-profile', {
@@ -139,15 +145,19 @@ export default function ProfilePage() {
         body: JSON.stringify({
           id: profile.user.id,
           name: formData.name,
-          email: formData.email
+          email: formData.email,
+          role: profile.user.role
         })
       })
       
+      const responseData = await response.json()
+      console.log('API response:', responseData)
+      
       if (!response.ok) {
-        throw new Error('Failed to update profile')
+        throw new Error(responseData.error || 'Failed to update profile')
       }
       
-      const updatedUser = await response.json()
+      const updatedUser = responseData
       
       // Update the profile state with the new user data
       setProfile(prev => {
@@ -175,6 +185,11 @@ export default function ProfilePage() {
     } catch (err) {
       console.error('Error updating profile:', err)
       setSaveStatus('error')
+      
+      // Show error for 5 seconds, then reset to idle
+      setTimeout(() => {
+        setSaveStatus('idle')
+      }, 5000)
     }
   }
 
