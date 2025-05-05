@@ -115,6 +115,9 @@ export default function ProfilePage() {
     try {
       setSaveStatus('saving')
       
+      // Add a small delay to simulate network latency
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
       const response = await fetch('/api/user-profile', {
         method: 'PUT',
         headers: {
@@ -212,12 +215,15 @@ export default function ProfilePage() {
                 Edit Profile
               </button>
             ) : (
-              <button
-                onClick={() => setIsEditing(false)}
-                className={`bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 shadow-sm transition-all ${robotoMono.className}`}
-              >
-                Cancel
-              </button>
+              <div className="flex space-x-4 mt-4">
+                <button
+                  type="button"
+                  className="bg-gray-200 text-black px-4 py-2 rounded-lg hover:bg-gray-300 shadow-sm transition-all"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancel
+                </button>
+              </div>
             )}
           </div>
 
@@ -267,7 +273,9 @@ export default function ProfilePage() {
               </button>
               
               {saveStatus === 'success' && (
-                <p className="text-green-600 mt-2">Profile updated successfully!</p>
+                <div className="text-green-500 text-sm mt-2 font-medium">
+                  Profile updated successfully!
+                </div>
               )}
               
               {saveStatus === 'error' && (
@@ -358,7 +366,10 @@ export default function ProfilePage() {
             )}
             
             <div className="mt-4">
-              <Link href="/maintenance/new" className={`text-burgundy-700 hover:text-burgundy-900 text-sm font-medium ${robotoMono.className}`}>
+              <Link 
+                href="/maintenance/new" 
+                className={`text-burgundy-700 hover:text-burgundy-900 text-sm font-medium ${robotoMono.className}`}
+              >
                 + Submit New Request
               </Link>
             </div>

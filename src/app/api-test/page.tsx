@@ -371,7 +371,7 @@ export default function ApiTestPage() {
                   <button
                     onClick={testDatabaseQuery}
                     disabled={isLoading}
-                    className={`bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors disabled:opacity-50 shadow-sm ${robotoMono.className}`}
+                    className={`bg-white text-black border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors disabled:opacity-50 shadow-sm ${robotoMono.className}`}
                   >
                     {isLoading ? 'Querying...' : 'Run Query'}
                   </button>
@@ -396,23 +396,23 @@ export default function ApiTestPage() {
             <h2 className={`text-xl font-semibold text-burgundy-800 ${robotoMono.className}`}>Test Logs</h2>
             <button 
               onClick={clearLogs}
-              className="bg-white text-gray-700 border border-gray-300 px-3 py-1 rounded-lg text-sm hover:bg-gray-100 transition-colors shadow-sm"
+              className="bg-white text-black border border-gray-300 px-3 py-1 rounded-lg text-sm hover:bg-gray-100 transition-colors shadow-sm"
             >
               Clear
             </button>
           </div>
           
-          <div className={`bg-gray-900 text-white p-4 rounded-lg h-96 overflow-y-auto text-sm ${robotoMono.className}`}>
+          <div className={`bg-gray-100 text-black p-4 rounded-lg h-96 overflow-y-auto text-sm ${robotoMono.className}`}>
             {logs.length === 0 ? (
-              <p className="text-gray-400">No logs yet. Run some tests to see results here.</p>
+              <p className="text-gray-600">No logs yet. Run some tests to see results here.</p>
             ) : (
               logs.map((log, index) => (
                 <div 
                   key={index} 
                   className={`py-1 ${
-                    log.includes('❌') ? 'text-red-400' :
-                    log.includes('✅') ? 'text-green-400' :
-                    'text-blue-400'
+                    log.includes('❌') ? 'text-red-700' :
+                    log.includes('✅') ? 'text-green-700' :
+                    'text-blue-700'
                   }`}
                 >
                   {log}
