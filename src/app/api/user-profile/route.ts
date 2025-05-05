@@ -175,7 +175,21 @@ export async function GET(request: NextRequest) {
         .order('created_at', { ascending: false });
       
       if (!maintenanceError && requests) {
-        maintenanceRequests = requests;
+        // Map the requests to ensure they match the MaintenanceRequest interface
+        maintenanceRequests = requests.map(req => ({
+          id: req.id,
+          title: req.title,
+          description: req.description,
+          status: req.status,
+          priority: req.priority,
+          category: req.category,
+          created_at: req.created_at,
+          updated_at: req.updated_at,
+          property: {
+            unit_number: req.property?.unit_number || '',
+            address: req.property?.address || ''
+          }
+        }));
       } else {
         console.warn('Error fetching maintenance requests:', maintenanceError);
       }
@@ -194,7 +208,15 @@ export async function GET(request: NextRequest) {
         .limit(10);
       
       if (!notificationsError && notifs) {
-        notifications = notifs;
+        // Map the notifications to ensure they match the Notification interface
+        notifications = notifs.map(notif => ({
+          id: notif.id,
+          user_id: notif.user_id,
+          title: notif.title,
+          message: notif.message,
+          is_read: notif.is_read,
+          created_at: notif.created_at
+        }));
       } else {
         console.warn('Error fetching notifications:', notificationsError);
       }
