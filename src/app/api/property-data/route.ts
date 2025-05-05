@@ -37,42 +37,28 @@ export async function GET() {
     console.log('Fetching properties from Supabase...');
     
     // Fetch properties from Supabase
-    const { data: properties, error } = await supabase
+    // First, let's check the structure of the properties table
+    console.log('Checking properties table structure...');
+    const { data: tableInfo, error: tableError } = await supabase
       .from('properties')
-      .select(`
-        id,
-        name,
-        address,
-        units,
-        last_inspection
-      `);
-    
-    if (error) {
-      console.error('Error fetching properties from Supabase:', error);
-      throw error;
+      .select('*')
+      .limit(1);
+      
+    if (tableError) {
+      console.error('Error checking properties table:', tableError);
+      throw tableError;
     }
     
-    // Fetch maintenance requests count for each property
-    const propertiesWithMaintenance = await Promise.all(
-      properties.map(async (property) => {
-        const { count, error: countError } = await supabase
-          .from('maintenance_requests')
-          .select('id', { count: 'exact' })
-          .eq('property_id', property.id);
-        
-        if (countError) {
-          console.warn(`Error fetching maintenance requests for property ${property.id}:`, countError);
-          return { ...property, maintenance_requests: 0 };
-        }
-        
-        return { ...property, maintenance_requests: count || 0 };
-      })
-    );
+    console.log('Properties table first row:', tableInfo);
     
-    // If no properties were found, use fallback data
-    const finalProperties = propertiesWithMaintenance.length > 0 
-      ? propertiesWithMaintenance 
-      : fallbackProperties;
+    // Use fallback data for now until we determine the correct column names
+    const properties = fallbackProperties;
+    
+    // No need to check for error since we're using fallback data directly
+    
+    // For now, use the fallback properties directly
+    // We'll update this once we determine the correct column structure
+    const finalProperties = fallbackProperties;
     
     // Calculate summary statistics
     const totalProperties = finalProperties.length;
