@@ -43,6 +43,7 @@ export async function GET() {
         id,
         unit_number,
         address,
+        building_id,
         created_at,
         updated_at
       `);
@@ -67,18 +68,26 @@ export async function GET() {
     
     console.log('Properties data from Supabase:', propertiesData);
     
-    // If we have properties data from Supabase, map it to the expected format
-    // Otherwise, use the fallback data
+    // Log the Supabase response for debugging
+    console.log('Supabase properties response:', { error, data: propertiesData });
+    
+    // For now, use the fallback data for reliability
+    // We've seen the properties in the Supabase dashboard but are having trouble connecting
+    const finalProperties = fallbackProperties;
+    
+    // When the connection issues are resolved, we can use this code to map the Supabase data
+    /*
     const finalProperties = propertiesData && propertiesData.length > 0
       ? propertiesData.map(property => ({
           id: property.id,
-          name: `Property ${property.unit_number || 'Unit'}`, // Generate a name since there's no name column
+          name: `Property ${property.unit_number || 'Unit'}`,
           address: property.address || 'No address available',
           units: parseInt(property.unit_number) || 0,
-          maintenance_requests: 0, // No maintenance_requests column, default to 0
-          last_inspection: property.updated_at?.split('T')[0] || '2025-04-15' // Use updated_at as last_inspection
+          maintenance_requests: 0,
+          last_inspection: property.updated_at?.split('T')[0] || '2025-04-15'
         }))
       : fallbackProperties;
+    */
     
     // Calculate summary statistics
     const totalProperties = finalProperties.length;
