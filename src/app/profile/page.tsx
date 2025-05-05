@@ -115,9 +115,7 @@ export default function ProfilePage() {
     try {
       setSaveStatus('saving')
       
-      // Add a small delay to simulate network latency
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
+      // Make the API call to update the profile in Supabase
       const response = await fetch('/api/user-profile', {
         method: 'PUT',
         headers: {
