@@ -4,6 +4,50 @@ import supabase from '@/lib/supabase';
 // Define route segment config for static rendering
 export const dynamic = 'force-dynamic';
 
+// Define interfaces for data types
+interface Property {
+  id: string;
+  unit_number: string;
+  address: string;
+  building: {
+    id: string;
+    name: string;
+  };
+}
+
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  created_at: string;
+  properties?: { property: Property }[];
+}
+
+interface MaintenanceRequest {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  priority: string;
+  category: string;
+  created_at: string;
+  updated_at: string;
+  property: {
+    unit_number: string;
+    address: string;
+  };
+}
+
+interface Notification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
+
 // GET: Fetch user profile data
 export async function GET(request: NextRequest) {
   try {
@@ -112,7 +156,7 @@ export async function GET(request: NextRequest) {
     }
     
     // If we have user data, try to fetch maintenance requests
-    let maintenanceRequests = [];
+    let maintenanceRequests: MaintenanceRequest[] = [];
     try {
       const { data: requests, error: maintenanceError } = await supabase
         .from('maintenance_requests')
@@ -140,7 +184,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Try to fetch notifications
-    let notifications = [];
+    let notifications: Notification[] = [];
     try {
       const { data: notifs, error: notificationsError } = await supabase
         .from('notifications')
@@ -159,14 +203,15 @@ export async function GET(request: NextRequest) {
     }
     
     // Format and return the complete user profile data
+    const typedUserData = userData as UserData;
     return NextResponse.json({
       user: {
-        id: userData.id,
-        name: userData.name,
-        email: userData.email,
-        role: userData.role,
-        created_at: userData.created_at,
-        properties: userData.properties?.map((item: any) => item.property).filter(Boolean) || []
+        id: typedUserData.id,
+        name: typedUserData.name,
+        email: typedUserData.email,
+        role: typedUserData.role,
+        created_at: typedUserData.created_at,
+        properties: typedUserData.properties?.map((item) => item.property).filter(Boolean) || []
       },
       maintenanceRequests: maintenanceRequests,
       notifications: notifications
