@@ -221,12 +221,13 @@ export default function DashboardPage() {
                       {property.last_inspection}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button 
+                      <a 
+                        href={`/api?property_id=${property.id.replace('prop-', '')}`}
+                        target="_blank"
                         className={`text-burgundy-700 hover:text-burgundy-900 ${robotoMono.className}`}
-                        onClick={() => alert(`Viewing details for ${property.name}`)}
                       >
                         View Details
-                      </button>
+                      </a>
                     </td>
                   </tr>
                 ))}

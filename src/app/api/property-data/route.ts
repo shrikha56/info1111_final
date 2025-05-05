@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+// Define route segment config for static rendering
+export const dynamic = 'force-dynamic';
+
 // Sample strata management data from the PHP file
 const properties = [
   {
