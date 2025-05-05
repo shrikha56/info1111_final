@@ -49,10 +49,19 @@ export async function GET() {
     
     if (error) {
       console.error('Error fetching properties from Supabase:', error);
+      // Calculate summary for fallback properties
+      const fallbackSummary = {
+        totalProperties: fallbackProperties.length,
+        totalUnits: fallbackProperties.reduce((sum, property) => sum + property.units, 0),
+        totalMaintenanceRequests: fallbackProperties.reduce((sum, property) => sum + property.maintenance_requests, 0),
+        averageUnitsPerProperty: Math.round(fallbackProperties.reduce((sum, property) => sum + property.units, 0) / fallbackProperties.length),
+        averageMaintenancePerProperty: (fallbackProperties.reduce((sum, property) => sum + property.maintenance_requests, 0) / fallbackProperties.length).toFixed(1)
+      };
+      
       // Fall back to hardcoded data if there's an error
       return NextResponse.json({
         properties: fallbackProperties,
-        summary: calculateSummary(fallbackProperties)
+        summary: fallbackSummary
       });
     }
     
