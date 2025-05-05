@@ -61,7 +61,7 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-6">
+      <div className="min-h-screen bg-gray-100 p-6 text-black">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse">
             <div className="h-10 bg-gray-200 rounded w-1/3 mb-6"></div>
@@ -79,14 +79,14 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100 p-6">
+      <div className="min-h-screen bg-gray-100 p-6 text-black">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
             <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Dashboard</h2>
             <p className="text-gray-700 mb-4">{error}</p>
             <button 
               onClick={fetchPropertyData}
-              className="bg-burgundy-700 text-white px-4 py-2 rounded-lg hover:bg-burgundy-800"
+              className="bg-burgundy-700 text-black px-4 py-2 rounded-lg hover:bg-burgundy-800"
             >
               Try Again
             </button>
@@ -98,7 +98,7 @@ export default function DashboardPage() {
 
   if (!propertyData) {
     return (
-      <div className="min-h-screen bg-gray-100 p-6">
+      <div className="min-h-screen bg-gray-100 p-6 text-black">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">No Data Available</h2>
@@ -109,7 +109,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-6 text-black">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -125,7 +125,7 @@ export default function DashboardPage() {
             </Link>
             <Link 
               href="/api-test" 
-              className={`bg-burgundy-700 text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 transition-all shadow-md ${robotoMono.className}`}
+              className={`bg-burgundy-700 text-black px-4 py-2 rounded-lg hover:bg-burgundy-800 transition-all shadow-md ${robotoMono.className}`}
             >
               API Testing
             </Link>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <a 
-                        href={`/api?property_id=${property.id.replace('prop-', '')}`}
+                        href={`/api/index.php?property_id=${property.id}`}
                         target="_blank"
                         className={`text-burgundy-700 hover:text-burgundy-900 ${robotoMono.className}`}
                       >

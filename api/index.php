@@ -53,8 +53,13 @@ function get_property_details($property_id) {
 $property_id = isset($_GET['property_id']) ? $_GET['property_id'] : null;
 $property_details = null;
 
+// Always require a property_id
 if ($property_id) {
     $property_details = get_property_details($property_id);
+} else {
+    // Redirect to the main dashboard if no property_id is provided
+    header('Location: /');
+    exit;
 }
 
 // Sample PHP page
@@ -147,37 +152,16 @@ if ($property_details) {
                 <p><strong>Units:</strong> ' . htmlspecialchars($property_details['units']) . '</p>
                 <p><strong>Pending Maintenance Requests:</strong> ' . htmlspecialchars($property_details['maintenance_requests']) . '</p>
                 <p><strong>Last Inspection:</strong> ' . htmlspecialchars($property_details['last_inspection']) . '</p>
-                <a href="?" class="button">Back to All Properties</a>
+                <a href="/" class="button">Back to Dashboard</a>
             </div>';
 } else {
-    // Display all properties
+    // This should never happen because of the redirect, but just in case
     echo '
-            <table>
-                <thead>
-                    <tr>
-                        <th>Property Name</th>
-                        <th>Address</th>
-                        <th>Units</th>
-                        <th>Maintenance</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>';
-    
-    foreach ($properties as $property) {
-        echo '
-                    <tr>
-                        <td>' . htmlspecialchars($property['name']) . '</td>
-                        <td>' . htmlspecialchars($property['address']) . '</td>
-                        <td>' . htmlspecialchars($property['units']) . '</td>
-                        <td>' . htmlspecialchars($property['maintenance_requests']) . ' requests</td>
-                        <td><a href="?property_id=' . htmlspecialchars($property['id']) . '" class="button">View Details</a></td>
-                    </tr>';
-    }
-    
-    echo '
-                </tbody>
-            </table>';
+            <div class="property-card">
+                <h3>No property selected</h3>
+                <p>Please return to the dashboard and select a property.</p>
+                <a href="/" class="button">Return to Dashboard</a>
+            </div>';
 }
 
 echo '

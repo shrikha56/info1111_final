@@ -158,7 +158,7 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-50 p-6 text-black">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
@@ -199,15 +199,15 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+    <div className="min-h-screen bg-gray-50 p-6 text-black">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
           <div className="flex justify-between items-center mb-6">
-            <h1 className={`text-3xl font-bold text-burgundy-800 ${robotoMono.className}`}>User Profile</h1>
+            <h1 className={`text-2xl font-bold text-burgundy-800 ${robotoMono.className}`}>User Profile</h1>
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className={`bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 shadow-sm transition-all ${robotoMono.className}`}
+                className={`border border-burgundy-700 text-black px-4 py-2 rounded-lg hover:bg-burgundy-50 shadow-sm transition-all ${robotoMono.className}`}
               >
                 Edit Profile
               </button>
@@ -260,7 +260,7 @@ export default function ProfilePage() {
               
               <button
                 type="submit"
-                className={`bg-burgundy-700 text-white px-6 py-2 rounded-lg hover:bg-burgundy-800 disabled:opacity-50 shadow-md transition-all ${robotoMono.className}`}
+                className={`bg-burgundy-700 text-black px-6 py-2 rounded-lg hover:bg-burgundy-800 shadow-md transition-all ${robotoMono.className}`}
                 disabled={saveStatus === 'saving'}
               >
                 {saveStatus === 'saving' ? 'Saving...' : 'Save Changes'}
@@ -271,7 +271,9 @@ export default function ProfilePage() {
               )}
               
               {saveStatus === 'error' && (
-                <p className="text-red-600 mt-2">Failed to update profile. Please try again.</p>
+                <div className="text-red-500 text-sm mt-2 font-medium">
+                  Failed to update profile. Please try again.
+                </div>
               )}
             </form>
           ) : (
