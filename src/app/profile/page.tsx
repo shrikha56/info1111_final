@@ -367,7 +367,7 @@ export default function ProfilePage() {
             
             <div className="mt-4">
               <Link 
-                href="/maintenance/new" 
+                href="/maintenance" 
                 className={`text-burgundy-700 hover:text-burgundy-900 text-sm font-medium ${robotoMono.className}`}
               >
                 + Submit New Request

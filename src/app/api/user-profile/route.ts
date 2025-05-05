@@ -342,16 +342,26 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('Error updating user profile:', error);
       
-      // For demo purposes, return success with the provided data
-      // This ensures the UI works even if the database connection fails
-      console.log('Returning mock success response for demo purposes');
-      return NextResponse.json({
-        id: body.id,
-        name: body.name,
-        email: body.email,
-        role: body.role || 'resident',
-        updated_at: new Date().toISOString()
-      });
+      // Try again with a different approach - using upsert instead of update
+      console.log('Attempting upsert as fallback...');
+      const { data: upsertedUser, error: upsertError } = await supabase
+        .from('users')
+        .upsert({
+          id: body.id,
+          name: body.name,
+          email: body.email,
+          role: body.role || 'resident',
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+      
+      if (upsertError) {
+        console.error('Error upserting user profile:', upsertError);
+        return NextResponse.json({ error: 'Failed to update user profile' }, { status: 500 });
+      }
+      
+      return NextResponse.json(upsertedUser);
     }
     
     return NextResponse.json(updatedUser);
