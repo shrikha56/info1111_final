@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import supabaseAdmin from '@/lib/supabase-admin';
 
 // Define route segment config for static rendering
 export const dynamic = 'force-dynamic';
@@ -33,8 +34,42 @@ const fallbackProperties = [
 
 export async function GET() {
   try {
-    // Use fallback data for reliability
-    const finalProperties = fallbackProperties;
+    console.log('Fetching properties from Supabase...');
+    
+    // Try to fetch properties from Supabase using the admin client
+    const { data: propertiesData, error } = await supabaseAdmin
+      .from('properties')
+      .select(`
+        id,
+        unit_number,
+        address,
+        created_at,
+        updated_at
+      `);
+    
+    if (error) {
+      console.error('Error fetching properties from Supabase:', error);
+      // Fall back to hardcoded data if there's an error
+      return NextResponse.json({
+        properties: fallbackProperties,
+        summary: calculateSummary(fallbackProperties)
+      });
+    }
+    
+    console.log('Properties data from Supabase:', propertiesData);
+    
+    // If we have properties data from Supabase, map it to the expected format
+    // Otherwise, use the fallback data
+    const finalProperties = propertiesData && propertiesData.length > 0
+      ? propertiesData.map(property => ({
+          id: property.id,
+          name: `Property ${property.unit_number || 'Unit'}`, // Generate a name since there's no name column
+          address: property.address || 'No address available',
+          units: parseInt(property.unit_number) || 0,
+          maintenance_requests: 0, // No maintenance_requests column, default to 0
+          last_inspection: property.updated_at?.split('T')[0] || '2025-04-15' // Use updated_at as last_inspection
+        }))
+      : fallbackProperties;
     
     // Calculate summary statistics
     const totalProperties = finalProperties.length;
