@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Roboto_Mono } from 'next/font/google'
 
 interface Property {
   id: string
@@ -49,6 +50,9 @@ interface UserProfile {
   maintenanceRequests: MaintenanceRequest[]
   notifications: Notification[]
 }
+
+// Use Roboto Mono for code-like content
+const robotoMono = Roboto_Mono({ subsets: ['latin'] })
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
@@ -199,18 +203,18 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">User Profile</h1>
+            <h1 className={`text-3xl font-bold text-burgundy-800 ${robotoMono.className}`}>User Profile</h1>
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50"
+                className={`bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 shadow-sm transition-all ${robotoMono.className}`}
               >
                 Edit Profile
               </button>
             ) : (
               <button
                 onClick={() => setIsEditing(false)}
-                className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50"
+                className={`bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 shadow-sm transition-all ${robotoMono.className}`}
               >
                 Cancel
               </button>
@@ -256,7 +260,7 @@ export default function ProfilePage() {
               
               <button
                 type="submit"
-                className="bg-burgundy-700 text-white px-6 py-2 rounded-lg hover:bg-burgundy-800 disabled:opacity-50"
+                className={`bg-burgundy-700 text-white px-6 py-2 rounded-lg hover:bg-burgundy-800 disabled:opacity-50 shadow-md transition-all ${robotoMono.className}`}
                 disabled={saveStatus === 'saving'}
               >
                 {saveStatus === 'saving' ? 'Saving...' : 'Save Changes'}
@@ -321,8 +325,8 @@ export default function ProfilePage() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Recent Maintenance Requests</h2>
+          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+            <h2 className={`text-xl font-bold text-burgundy-800 mb-4 ${robotoMono.className}`}>Recent Maintenance Requests</h2>
             
             {profile.maintenanceRequests.length > 0 ? (
               <div className="space-y-4">
@@ -352,14 +356,14 @@ export default function ProfilePage() {
             )}
             
             <div className="mt-4">
-              <Link href="/maintenance/new" className="text-burgundy-700 hover:text-burgundy-900 text-sm font-medium">
+              <Link href="/maintenance/new" className={`text-burgundy-700 hover:text-burgundy-900 text-sm font-medium ${robotoMono.className}`}>
                 + Submit New Request
               </Link>
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Notifications</h2>
+          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+            <h2 className={`text-xl font-bold text-burgundy-800 mb-4 ${robotoMono.className}`}>Notifications</h2>
             
             {profile.notifications.length > 0 ? (
               <div className="space-y-3">
