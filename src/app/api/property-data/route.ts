@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import supabaseAdmin from '@/lib/supabase-admin';
+import supabase from '@/lib/supabase';
 
 // Define route segment config for static rendering
 export const dynamic = 'force-dynamic';
@@ -36,47 +36,36 @@ export async function GET() {
   try {
     console.log('Fetching properties from Supabase...');
     
-    // Try to fetch properties from Supabase using the admin client
-    const { data: propertiesData, error } = await supabaseAdmin
+    // Try to fetch properties from Supabase using the regular client
+    const { data: propertiesData, error } = await supabase
       .from('properties')
       .select(`
         id,
         unit_number,
         address,
-        building_id,
         created_at,
         updated_at
       `);
     
     if (error) {
       console.error('Error fetching properties from Supabase:', error);
-      // Calculate summary for fallback properties
-      const fallbackSummary = {
-        totalProperties: fallbackProperties.length,
-        totalUnits: fallbackProperties.reduce((sum, property) => sum + property.units, 0),
-        totalMaintenanceRequests: fallbackProperties.reduce((sum, property) => sum + property.maintenance_requests, 0),
-        averageUnitsPerProperty: Math.round(fallbackProperties.reduce((sum, property) => sum + property.units, 0) / fallbackProperties.length),
-        averageMaintenancePerProperty: (fallbackProperties.reduce((sum, property) => sum + property.maintenance_requests, 0) / fallbackProperties.length).toFixed(1)
-      };
-      
       // Fall back to hardcoded data if there's an error
       return NextResponse.json({
         properties: fallbackProperties,
-        summary: fallbackSummary
+        summary: {
+          totalProperties: fallbackProperties.length,
+          totalUnits: fallbackProperties.reduce((sum, property) => sum + property.units, 0),
+          totalMaintenanceRequests: fallbackProperties.reduce((sum, property) => sum + property.maintenance_requests, 0),
+          averageUnitsPerProperty: Math.round(fallbackProperties.reduce((sum, property) => sum + property.units, 0) / fallbackProperties.length),
+          averageMaintenancePerProperty: (fallbackProperties.reduce((sum, property) => sum + property.maintenance_requests, 0) / fallbackProperties.length).toFixed(1)
+        }
       });
     }
     
     console.log('Properties data from Supabase:', propertiesData);
     
-    // Log the Supabase response for debugging
-    console.log('Supabase properties response:', { error, data: propertiesData });
-    
-    // For now, use the fallback data for reliability
-    // We've seen the properties in the Supabase dashboard but are having trouble connecting
-    const finalProperties = fallbackProperties;
-    
-    // When the connection issues are resolved, we can use this code to map the Supabase data
-    /*
+    // If we have properties data from Supabase, map it to the expected format
+    // Otherwise, use the fallback data
     const finalProperties = propertiesData && propertiesData.length > 0
       ? propertiesData.map(property => ({
           id: property.id,
@@ -87,7 +76,6 @@ export async function GET() {
           last_inspection: property.updated_at?.split('T')[0] || '2025-04-15'
         }))
       : fallbackProperties;
-    */
     
     // Calculate summary statistics
     const totalProperties = finalProperties.length;
