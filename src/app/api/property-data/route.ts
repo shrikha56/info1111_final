@@ -33,16 +33,7 @@ const fallbackProperties = [
 
 export async function GET() {
   try {
-    // TODO: Connect to Supabase when the properties table is properly set up
-    // The properties table should have the following columns:
-    // - property_id (text, primary key)
-    // - property_name (text)
-    // - property_address (text)
-    // - unit_count (integer)
-    // - maintenance_count (integer)
-    // - last_inspection_date (date)
-    //
-    // For now, use the fallback data for reliability
+    // Use fallback data for reliability
     const finalProperties = fallbackProperties;
     
     // Calculate summary statistics
