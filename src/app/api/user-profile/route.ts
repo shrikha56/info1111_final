@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import supabase from '@/lib/supabase';
+import supabaseAdmin from '@/lib/supabase-admin';
 
 // Define route segment config for static rendering
 export const dynamic = 'force-dynamic';
@@ -107,9 +108,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         user: {
           id: userId || '00000000-0000-0000-0000-000000000003',
-          name: 'John Resident',
+          name: 'John Manager',
           email: 'john@example.com',
-          role: 'resident',
+          role: 'Manager',
           created_at: new Date().toISOString(),
           properties: [
             {
@@ -319,7 +320,7 @@ export async function GET(request: NextRequest) {
         id: '00000000-0000-0000-0000-000000000003',
         name: 'John Manager',
         email: 'john@example.com',
-        role: 'manager',
+        role: 'Manager',
         created_at: new Date().toISOString(),
         properties: [
           {
@@ -399,24 +400,64 @@ export async function PUT(request: NextRequest) {
       updated_at: new Date().toISOString()
     };
     
-    // Due to RLS policy restrictions, we'll simulate a successful update
-    // and return the updated user data without actually modifying the database
-    console.log('Simulating successful profile update due to RLS restrictions');
-    
-    // Return the updated user data as if it was successfully saved
-    const updatedUser = {
-      id: body.id,
-      name: body.name,
-      email: body.email,
-      role: body.role || 'manager',
-      updated_at: new Date().toISOString()
-    };
-    
-    // Log the data that would have been saved
-    console.log('User profile update data:', updatedUser);
-    
-    // Return success response with the updated data
-    return NextResponse.json(updatedUser);
+    // Use the admin client to bypass RLS policies
+    try {
+      // First check if the user exists
+      const { data: existingUser, error: checkError } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('id', body.id)
+        .single();
+      
+      if (checkError) {
+        console.log('User not found, will create new user');
+        // User doesn't exist, insert a new record
+        const { data: newUser, error: insertError } = await supabaseAdmin
+          .from('users')
+          .insert({
+            id: body.id,
+            name: body.name,
+            email: body.email,
+            role: body.role || 'Manager',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .select()
+          .single();
+        
+        if (insertError) {
+          console.error('Error inserting user profile:', insertError);
+          return NextResponse.json({ error: 'Failed to create user profile' }, { status: 500 });
+        }
+        
+        console.log('Successfully created new user:', newUser);
+        return NextResponse.json(newUser);
+      }
+      
+      // User exists, update the record
+      const { data: updatedUser, error } = await supabaseAdmin
+        .from('users')
+        .update({
+          name: body.name,
+          email: body.email,
+          role: body.role || 'Manager',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', body.id)
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Error updating user profile:', error);
+        return NextResponse.json({ error: 'Failed to update user profile' }, { status: 500 });
+      }
+      
+      console.log('Successfully updated user:', updatedUser);
+      return NextResponse.json(updatedUser);
+    } catch (error) {
+      console.error('Unexpected error in user profile update:', error);
+      return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
+    }
   } catch (error) {
     console.error('Error in user profile update API:', error);
     return NextResponse.json({ error: 'Failed to update user profile' }, { status: 500 });

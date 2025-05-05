@@ -81,7 +81,7 @@ export default function ProfilePage() {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
 
   // For demo purposes, use a fixed user ID
-  const userId = '00000000-0000-0000-0000-000000000003' // John Resident
+  const userId = '00000000-0000-0000-0000-000000000003' // John Manager
 
   useEffect(() => {
     fetchUserProfile()
