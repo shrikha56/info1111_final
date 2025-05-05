@@ -38,6 +38,20 @@ interface Notification {
   created_at: string
 }
 
+interface Announcement {
+  id: string
+  title: string
+  content: string
+  type: string
+  created_at: string
+  updated_at: string
+  expires_at?: string
+  building?: {
+    id: string
+    name: string
+  }
+}
+
 interface UserProfile {
   user: {
     id: string
@@ -49,6 +63,7 @@ interface UserProfile {
   }
   maintenanceRequests: MaintenanceRequest[]
   notifications: Notification[]
+  announcements: Announcement[]
 }
 
 // Use Roboto Mono for code-like content
@@ -135,14 +150,20 @@ export default function ProfilePage() {
       const updatedUser = await response.json()
       
       // Update the profile state with the new user data
-      setProfile(prev => prev ? {
-        ...prev,
-        user: {
-          ...prev.user,
-          name: updatedUser.name,
-          email: updatedUser.email
-        }
-      } : null)
+      setProfile(prev => {
+        if (!prev) return null;
+        
+        // Create a new profile object with updated user data
+        return {
+          ...prev,
+          user: {
+            ...prev.user,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            role: updatedUser.role || prev.user.role
+          }
+        };
+      })
       
       setSaveStatus('success')
       setIsEditing(false)
@@ -390,6 +411,32 @@ export default function ProfilePage() {
               </div>
             ) : (
               <p className="text-gray-500">No notifications.</p>
+            )}
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 mt-6">
+            <h2 className={`text-xl font-bold text-burgundy-800 mb-4 ${robotoMono.className}`}>Announcements</h2>
+            
+            {profile.announcements && profile.announcements.length > 0 ? (
+              <div className="space-y-3">
+                {profile.announcements.map(announcement => (
+                  <div key={announcement.id} className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-medium text-burgundy-700">{announcement.title}</h3>
+                      <span className="text-xs px-2 py-1 rounded bg-burgundy-100 text-burgundy-800">{announcement.type}</span>
+                    </div>
+                    <p className="text-gray-600 text-sm mt-2">{announcement.content}</p>
+                    <div className="flex justify-between items-center mt-3 text-xs text-gray-500">
+                      <span>Posted: {new Date(announcement.created_at).toLocaleDateString()}</span>
+                      {announcement.building && (
+                        <span>Building: {announcement.building.name}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No announcements.</p>
             )}
           </div>
         </div>
