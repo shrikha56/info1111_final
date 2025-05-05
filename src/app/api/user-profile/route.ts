@@ -186,8 +186,8 @@ export async function GET(request: NextRequest) {
           created_at: req.created_at,
           updated_at: req.updated_at,
           property: {
-            unit_number: req.property?.unit_number || '',
-            address: req.property?.address || ''
+            unit_number: req.property && req.property[0] ? req.property[0].unit_number || '' : '',
+            address: req.property && req.property[0] ? req.property[0].address || '' : ''
           }
         }));
       } else {
