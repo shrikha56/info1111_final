@@ -7,6 +7,12 @@ export default function ApiTestPage() {
   const [activeTab, setActiveTab] = useState('maintenance')
   const [logs, setLogs] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [queryForm, setQueryForm] = useState({
+    table: 'maintenance_requests',
+    field: 'status',
+    value: 'pending',
+    limit: '10'
+  })
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
@@ -114,6 +120,58 @@ export default function ApiTestPage() {
     }
   }
 
+  const testDatabaseQuery = async () => {
+    try {
+      setIsLoading(true)
+      addLog('🔍 Testing direct database query...')
+      
+      // Prepare query parameters
+      const queryParams: any = {
+        table: queryForm.table,
+        limit: parseInt(queryForm.limit)
+      }
+      
+      // Add query filter if field and value are provided
+      if (queryForm.field && queryForm.value) {
+        queryParams.query = {
+          [queryForm.field]: queryForm.value
+        }
+      }
+      
+      addLog(`Querying table: ${queryForm.table} ${queryForm.field ? `WHERE ${queryForm.field} = ${queryForm.value}` : ''} LIMIT ${queryForm.limit}`)
+      
+      // Send the query request
+      const response = await fetch('/api/database-query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(queryParams)
+      })
+      
+      const data = await response.json()
+      
+      if (response.ok) {
+        addLog(`✅ Query successful: Retrieved ${data.count} records`)
+        addLog(`Results: ${JSON.stringify(data.data, null, 2)}`)
+      } else {
+        addLog(`❌ Query failed: ${data.error || response.statusText}`)
+      }
+    } catch (error) {
+      addLog(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  const handleQueryFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setQueryForm(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -169,6 +227,16 @@ export default function ApiTestPage() {
               }`}
             >
               PDF Generation
+            </button>
+            <button
+              onClick={() => setActiveTab('database')}
+              className={`px-4 py-3 text-sm font-medium ${
+                activeTab === 'database'
+                  ? 'text-burgundy-700 border-b-2 border-burgundy-700'
+                  : 'text-gray-500 hover:text-burgundy-700'
+              }`}
+            >
+              Database Query
             </button>
           </div>
           
@@ -230,6 +298,89 @@ export default function ApiTestPage() {
                 >
                   {isLoading ? 'Generating PDF...' : 'Download PDF'}
                 </button>
+              </div>
+            )}
+            
+            {activeTab === 'database' && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 text-black">Test Database Query</h2>
+                <p className="mb-4 text-gray-600">Directly query database tables</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Table</label>
+                    <select
+                      name="table"
+                      value={queryForm.table}
+                      onChange={handleQueryFormChange}
+                      className="w-full border border-gray-300 rounded-md p-2 focus:ring-burgundy-500 focus:border-burgundy-500"
+                    >
+                      <option value="users">Users</option>
+                      <option value="buildings">Buildings</option>
+                      <option value="properties">Properties</option>
+                      <option value="maintenance_requests">Maintenance Requests</option>
+                      <option value="comments">Comments</option>
+                      <option value="announcements">Announcements</option>
+                      <option value="notifications">Notifications</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Limit</label>
+                    <input
+                      type="number"
+                      name="limit"
+                      value={queryForm.limit}
+                      onChange={handleQueryFormChange}
+                      min="1"
+                      max="50"
+                      className="w-full border border-gray-300 rounded-md p-2 focus:ring-burgundy-500 focus:border-burgundy-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Filter Field (optional)</label>
+                    <input
+                      type="text"
+                      name="field"
+                      value={queryForm.field}
+                      onChange={handleQueryFormChange}
+                      placeholder="e.g., status"
+                      className="w-full border border-gray-300 rounded-md p-2 focus:ring-burgundy-500 focus:border-burgundy-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Filter Value (optional)</label>
+                    <input
+                      type="text"
+                      name="value"
+                      value={queryForm.value}
+                      onChange={handleQueryFormChange}
+                      placeholder="e.g., pending"
+                      className="w-full border border-gray-300 rounded-md p-2 focus:ring-burgundy-500 focus:border-burgundy-500"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={testDatabaseQuery}
+                    disabled={isLoading}
+                    className="bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 transition-colors disabled:opacity-50"
+                  >
+                    {isLoading ? 'Querying...' : 'Run Query'}
+                  </button>
+                  
+                  <div className="text-sm text-gray-500">
+                    <span className="font-medium">Example queries:</span>
+                    <ul className="list-disc list-inside mt-1">
+                      <li>All maintenance requests: select table, leave filter empty</li>
+                      <li>Pending requests: table=maintenance_requests, field=status, value=pending</li>
+                      <li>User by role: table=users, field=role, value=resident</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             )}
           </div>
