@@ -228,7 +228,7 @@ export default function ProfilePage() {
           <p className="text-gray-700 mb-4">{error}</p>
           <button 
             onClick={fetchUserProfile}
-            className="bg-burgundy-700 text-white px-4 py-2 rounded-lg hover:bg-burgundy-800"
+            className="bg-burgundy-700 text-black dark:text-white px-4 py-2 rounded-lg hover:bg-burgundy-800"
           >
             Try Again
           </button>
@@ -241,7 +241,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
         <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">No Profile Data Available</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">No Profile Data Available</h2>
         </div>
       </div>
     )
@@ -252,11 +252,11 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center mb-6">
-            <h1 className={`text-2xl font-bold text-burgundy-800 dark:text-burgundy-400 ${robotoMono.className}`}>User Profile</h1>
+            <h1 className={`text-2xl font-bold text-burgundy-800 dark:text-burgundy-300 ${robotoMono.className}`}>User Profile</h1>
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className={`border border-burgundy-700 text-black px-4 py-2 rounded-lg hover:bg-burgundy-50 shadow-sm transition-all ${robotoMono.className}`}
+                className={`border border-burgundy-700 dark:border-burgundy-500 text-black dark:text-white px-4 py-2 rounded-lg hover:bg-burgundy-50 dark:hover:bg-burgundy-900/20 shadow-sm transition-all ${robotoMono.className}`}
               >
                 Edit Profile
               </button>
@@ -264,7 +264,7 @@ export default function ProfilePage() {
               <div className="flex space-x-4 mt-4">
                 <button
                   type="button"
-                  className="bg-gray-200 text-black px-4 py-2 rounded-lg hover:bg-gray-300 shadow-sm transition-all"
+                  className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 shadow-sm transition-all"
                   onClick={() => setIsEditing(false)}
                 >
                   Cancel
@@ -312,7 +312,7 @@ export default function ProfilePage() {
               
               <button
                 type="submit"
-                className={`bg-burgundy-700 text-black px-6 py-2 rounded-lg hover:bg-burgundy-800 shadow-md transition-all ${robotoMono.className}`}
+                className={`bg-burgundy-700 dark:bg-burgundy-800 text-black dark:text-white px-6 py-2 rounded-lg hover:bg-burgundy-800 dark:hover:bg-burgundy-700 shadow-md transition-all ${robotoMono.className}`}
                 disabled={saveStatus === 'saving'}
               >
                 {saveStatus === 'saving' ? 'Saving...' : 'Save Changes'}
@@ -345,7 +345,7 @@ export default function ProfilePage() {
                 
                 <div>
                   <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Role</h3>
-                  <p className="text-gray-900 capitalize">{profile.user.role}</p>
+                  <p className="text-gray-900 dark:text-gray-100 capitalize">{profile.user.role}</p>
                 </div>
                 
                 <div>
@@ -382,7 +382,7 @@ export default function ProfilePage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className={`text-xl font-bold text-burgundy-800 mb-4 ${robotoMono.className}`}>Recent Maintenance Requests</h2>
+            <h2 className={`text-xl font-bold text-burgundy-800 dark:text-burgundy-300 mb-4 ${robotoMono.className}`}>Recent Maintenance Requests</h2>
             
             {profile.maintenanceRequests.length > 0 ? (
               <div className="space-y-4">
@@ -391,9 +391,9 @@ export default function ProfilePage() {
                     <div className="flex justify-between items-start">
                       <h3 className="font-medium text-gray-900 dark:text-gray-100">{request.title}</h3>
                       <span className={`text-sm px-2 py-1 rounded-full ${
-                        request.status === 'completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' :
-                        request.status === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' :
-                        request.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+                        request.status === 'completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' :
+                        request.status === 'in_progress' ? 'bg-blue-100 dark:bg-gray-700 text-blue-800 dark:text-gray-200' :
+                        request.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200' :
                         'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                       }`}>
                         {request.status.replace('_', ' ')}
@@ -414,7 +414,7 @@ export default function ProfilePage() {
             <div className="mt-4">
               <Link 
                 href="/maintenance" 
-                className={`text-burgundy-700 dark:text-burgundy-400 hover:text-burgundy-900 dark:hover:text-burgundy-300 text-sm font-medium ${robotoMono.className}`}
+                className={`text-burgundy-700 dark:text-burgundy-300 hover:text-burgundy-900 dark:hover:text-burgundy-200 text-sm font-medium ${robotoMono.className}`}
               >
                 + Submit New Request
               </Link>
@@ -422,7 +422,7 @@ export default function ProfilePage() {
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className={`text-xl font-bold text-burgundy-800 mb-4 ${robotoMono.className}`}>Notifications</h2>
+            <h2 className={`text-xl font-bold text-burgundy-800 dark:text-burgundy-300 mb-4 ${robotoMono.className}`}>Notifications</h2>
             
             {profile.notifications.length > 0 ? (
               <div className="space-y-3">
@@ -445,7 +445,7 @@ export default function ProfilePage() {
         {/* Cookie Preferences Section */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center mb-4">
-            <h2 className={`text-xl font-bold text-burgundy-800 ${robotoMono.className}`}>Privacy Preferences</h2>
+            <h2 className={`text-xl font-bold text-burgundy-800 dark:text-burgundy-300 ${robotoMono.className}`}>Privacy Preferences</h2>
             <button
               onClick={() => {
                 // Save cookie preferences
