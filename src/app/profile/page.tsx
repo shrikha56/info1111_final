@@ -207,8 +207,8 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 text-black">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 text-black dark:text-white">
+        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
             <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
@@ -222,8 +222,8 @@ export default function ProfilePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Profile</h2>
           <p className="text-gray-700 mb-4">{error}</p>
           <button 
@@ -239,8 +239,8 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">No Profile Data Available</h2>
         </div>
       </div>
@@ -248,11 +248,11 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 text-black">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 text-black dark:text-white">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center mb-6">
-            <h1 className={`text-2xl font-bold text-burgundy-800 ${robotoMono.className}`}>User Profile</h1>
+            <h1 className={`text-2xl font-bold text-burgundy-800 dark:text-burgundy-400 ${robotoMono.className}`}>User Profile</h1>
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
@@ -276,38 +276,38 @@ export default function ProfilePage() {
           {isEditing ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Name</label>
+                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Name</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-burgundy-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-burgundy-500"
                   required
                 />
               </div>
               
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Email</label>
+                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Email</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-burgundy-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-burgundy-500"
                   required
                 />
               </div>
               
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Role</label>
+                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Role</label>
                 <input
                   type="text"
                   value={profile.user.role}
-                  className="w-full border border-gray-300 rounded-lg p-2 bg-gray-100"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                   disabled
                 />
-                <p className="text-sm text-gray-500 mt-1">Role cannot be changed</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Role cannot be changed</p>
               </div>
               
               <button
@@ -319,13 +319,13 @@ export default function ProfilePage() {
               </button>
               
               {saveStatus === 'success' && (
-                <div className="text-green-500 text-sm mt-2 font-medium">
+                <div className="text-green-500 dark:text-green-400 text-sm mt-2 font-medium">
                   Profile updated successfully!
                 </div>
               )}
               
               {saveStatus === 'error' && (
-                <div className="text-red-500 text-sm mt-2 font-medium">
+                <div className="text-red-500 dark:text-red-400 text-sm mt-2 font-medium">
                   Failed to update profile. Please try again.
                 </div>
               )}
@@ -334,38 +334,38 @@ export default function ProfilePage() {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-gray-500 font-medium mb-1">Name</h3>
-                  <p className="text-gray-900">{profile.user.name}</p>
+                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Name</h3>
+                  <p className="text-gray-900 dark:text-gray-100">{profile.user.name}</p>
                 </div>
                 
                 <div>
-                  <h3 className="text-gray-500 font-medium mb-1">Email</h3>
-                  <p className="text-gray-900">{profile.user.email}</p>
+                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Email</h3>
+                  <p className="text-gray-900 dark:text-gray-100">{profile.user.email}</p>
                 </div>
                 
                 <div>
-                  <h3 className="text-gray-500 font-medium mb-1">Role</h3>
+                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Role</h3>
                   <p className="text-gray-900 capitalize">{profile.user.role}</p>
                 </div>
                 
                 <div>
-                  <h3 className="text-gray-500 font-medium mb-1">Member Since</h3>
-                  <p className="text-gray-900">
+                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Member Since</h3>
+                  <p className="text-gray-900 dark:text-gray-100">
                     {new Date(profile.user.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
               
               <div>
-                <h3 className="text-gray-700 font-semibold mb-2">Properties</h3>
+                <h3 className="text-gray-700 dark:text-gray-300 font-semibold mb-2">Properties</h3>
                 {profile.user.properties.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {profile.user.properties.map(property => (
-                      <div key={property.id} className="border border-gray-200 rounded-lg p-4">
+                      <div key={property.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <p className="font-medium">Unit {property.unit_number}</p>
-                        <p className="text-gray-600 text-sm">{property.address}</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">{property.address}</p>
                         {property.building && (
-                          <p className="text-gray-500 text-sm mt-1">
+                          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
                             {property.building.name}
                           </p>
                         )}
@@ -373,7 +373,7 @@ export default function ProfilePage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500">No properties associated with this account.</p>
+                  <p className="text-gray-500 dark:text-gray-400">No properties associated with this account.</p>
                 )}
               </div>
             </div>
@@ -381,26 +381,26 @@ export default function ProfilePage() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
             <h2 className={`text-xl font-bold text-burgundy-800 mb-4 ${robotoMono.className}`}>Recent Maintenance Requests</h2>
             
             {profile.maintenanceRequests.length > 0 ? (
               <div className="space-y-4">
                 {profile.maintenanceRequests.map(request => (
-                  <div key={request.id} className="border-b border-gray-200 pb-4 last:border-0">
+                  <div key={request.id} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0">
                     <div className="flex justify-between items-start">
-                      <h3 className="font-medium">{request.title}</h3>
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100">{request.title}</h3>
                       <span className={`text-sm px-2 py-1 rounded-full ${
-                        request.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        request.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                        request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
+                        request.status === 'completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' :
+                        request.status === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' :
+                        request.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+                        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                       }`}>
                         {request.status.replace('_', ' ')}
                       </span>
                     </div>
-                    <p className="text-gray-600 text-sm mt-1">{request.description}</p>
-                    <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{request.description}</p>
+                    <div className="flex justify-between items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
                       <span>{new Date(request.created_at).toLocaleDateString()}</span>
                       <span className="capitalize">{request.priority} priority</span>
                     </div>
@@ -408,42 +408,42 @@ export default function ProfilePage() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500">No maintenance requests found.</p>
+              <p className="text-gray-500 dark:text-gray-400">No maintenance requests found.</p>
             )}
             
             <div className="mt-4">
               <Link 
                 href="/maintenance" 
-                className={`text-burgundy-700 hover:text-burgundy-900 text-sm font-medium ${robotoMono.className}`}
+                className={`text-burgundy-700 dark:text-burgundy-400 hover:text-burgundy-900 dark:hover:text-burgundy-300 text-sm font-medium ${robotoMono.className}`}
               >
                 + Submit New Request
               </Link>
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
             <h2 className={`text-xl font-bold text-burgundy-800 mb-4 ${robotoMono.className}`}>Notifications</h2>
             
             {profile.notifications.length > 0 ? (
               <div className="space-y-3">
                 {profile.notifications.map(notification => (
-                  <div key={notification.id} className={`p-3 rounded-lg ${notification.is_read ? 'bg-gray-50' : 'bg-burgundy-50'}`}>
-                    <h3 className="font-medium">{notification.title}</h3>
-                    <p className="text-gray-600 text-sm mt-1">{notification.message}</p>
-                    <p className="text-xs text-gray-500 mt-2">
+                  <div key={notification.id} className={`p-3 rounded-lg ${notification.is_read ? 'bg-gray-50 dark:bg-gray-700' : 'bg-burgundy-50 dark:bg-burgundy-900/30'}`}>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{notification.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{notification.message}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                       {new Date(notification.created_at).toLocaleDateString()}
                     </p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500">No notifications.</p>
+              <p className="text-gray-500 dark:text-gray-400">No notifications.</p>
             )}
           </div>
         </div>
         
         {/* Cookie Preferences Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center mb-4">
             <h2 className={`text-xl font-bold text-burgundy-800 ${robotoMono.className}`}>Privacy Preferences</h2>
             <button
@@ -457,7 +457,7 @@ export default function ProfilePage() {
                 setCookieSuccess(true)
                 setTimeout(() => setCookieSuccess(false), 3000)
               }}
-              className={`px-4 py-2 bg-burgundy-700 text-black rounded-md hover:bg-burgundy-800 ${robotoMono.className}`}
+              className={`px-4 py-2 bg-burgundy-700 dark:bg-burgundy-800 text-black dark:text-white rounded-md hover:bg-burgundy-800 dark:hover:bg-burgundy-700 ${robotoMono.className}`}
             >
               Save Preferences
             </button>
@@ -466,52 +466,52 @@ export default function ProfilePage() {
           <div className="space-y-4 mb-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-gray-900">Essential Cookies</h3>
-                <p className="text-sm text-gray-500">Required for the website to function properly</p>
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">Essential Cookies</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Required for the website to function properly</p>
               </div>
               <div className="flex items-center">
                 <input 
                   type="checkbox" 
                   checked={true} 
                   disabled={true}
-                  className="h-4 w-4 rounded border-gray-300 text-burgundy-700 focus:ring-burgundy-500" 
+                  className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-burgundy-700 dark:text-burgundy-500 focus:ring-burgundy-500" 
                 />
               </div>
             </div>
             
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-gray-900">Analytics Cookies</h3>
-                <p className="text-sm text-gray-500">Help us improve our website by collecting anonymous usage data</p>
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">Analytics Cookies</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Help us improve our website by collecting anonymous usage data</p>
               </div>
               <div className="flex items-center">
                 <input 
                   type="checkbox" 
                   checked={analyticsEnabled} 
                   onChange={(e) => setAnalyticsEnabled(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-burgundy-700 focus:ring-burgundy-500" 
+                  className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-burgundy-700 dark:text-burgundy-500 focus:ring-burgundy-500" 
                 />
               </div>
             </div>
             
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-gray-900">Preferences Cookies</h3>
-                <p className="text-sm text-gray-500">Remember your settings and preferences</p>
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">Preferences Cookies</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Remember your settings and preferences</p>
               </div>
               <div className="flex items-center">
                 <input 
                   type="checkbox" 
                   checked={preferencesEnabled} 
                   onChange={(e) => setPreferencesEnabled(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-burgundy-700 focus:ring-burgundy-500" 
+                  className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-burgundy-700 dark:text-burgundy-500 focus:ring-burgundy-500" 
                 />
               </div>
             </div>
           </div>
           
           {cookieSuccess && (
-            <div className="p-3 bg-green-50 text-green-800 rounded-md">
+            <div className="p-3 bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-md">
               Your privacy preferences have been saved.
             </div>
           )}
