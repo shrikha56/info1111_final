@@ -29,14 +29,24 @@ export default function ThemeSwitcher() {
     }
   }
 
-  // Apply theme on initial load
+  // Apply theme on initial load and check system preference
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark')
+    // Check for system preference on first load if no theme cookie is set
+    if (!document.cookie.includes('theme-preference')) {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      if (prefersDark) {
+        updateCookie('dark')
+        document.documentElement.classList.add('dark')
+      }
     } else {
-      document.documentElement.classList.remove('dark')
+      // Apply saved theme
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     }
-  }, [theme])
+  }, [theme, updateCookie])
 
   if (!mounted) return null
 

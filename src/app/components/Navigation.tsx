@@ -27,8 +27,8 @@ export default function Navigation() {
             href={item.href}
             className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
               isActive
-                ? 'bg-burgundy-700 text-white'
-                : 'text-gray-600 hover:bg-burgundy-50 hover:text-burgundy-700'
+                ? 'bg-burgundy-700 text-white dark:bg-burgundy-800 dark:text-white'
+                : 'text-gray-600 dark:text-gray-300 hover:bg-burgundy-50 dark:hover:bg-gray-700 hover:text-burgundy-700 dark:hover:text-burgundy-300'
             }`}
           >
             <item.icon className="mr-3 h-6 w-6" aria-hidden="true" />

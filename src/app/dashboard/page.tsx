@@ -61,16 +61,16 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-6 text-black">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 text-black dark:text-white">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse">
-            <div className="h-10 bg-gray-200 rounded w-1/3 mb-6"></div>
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-32 bg-gray-200 rounded-lg"></div>
+                <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
               ))}
             </div>
-            <div className="h-64 bg-gray-200 rounded-lg"></div>
+            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
           </div>
         </div>
       </div>
@@ -79,14 +79,14 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100 p-6 text-black">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 text-black dark:text-white">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Dashboard</h2>
-            <p className="text-gray-700 mb-4">{error}</p>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error Loading Dashboard</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">{error}</p>
             <button 
               onClick={fetchPropertyData}
-              className="bg-burgundy-700 text-black px-4 py-2 rounded-lg hover:bg-burgundy-800"
+              className="bg-burgundy-700 dark:bg-burgundy-800 text-black dark:text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 dark:hover:bg-burgundy-700"
             >
               Try Again
             </button>
@@ -98,10 +98,10 @@ export default function DashboardPage() {
 
   if (!propertyData) {
     return (
-      <div className="min-h-screen bg-gray-100 p-6 text-black">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 text-black dark:text-white">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">No Data Available</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">No Data Available</h2>
           </div>
         </div>
       </div>
@@ -109,23 +109,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 text-black">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 text-black dark:text-white">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className={`text-3xl font-bold text-burgundy-800 ${robotoMono.className}`}>Strata Management Dashboard</h1>
-            <p className="text-gray-600 mt-1">Property overview and management</p>
+            <h1 className={`text-3xl font-bold text-burgundy-800 dark:text-burgundy-300 ${robotoMono.className}`}>Strata Management Dashboard</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Property overview and management</p>
           </div>
           <div className="flex space-x-4">
             <Link 
               href="/profile" 
-              className={`bg-white text-burgundy-700 border border-burgundy-700 px-4 py-2 rounded-lg hover:bg-burgundy-50 shadow-sm transition-all ${robotoMono.className}`}
+              className={`bg-white dark:bg-gray-800 text-burgundy-700 dark:text-burgundy-300 border border-burgundy-700 dark:border-burgundy-500 px-4 py-2 rounded-lg hover:bg-burgundy-50 dark:hover:bg-gray-700 shadow-sm transition-all ${robotoMono.className}`}
             >
               User Profile
             </Link>
             <Link 
               href="/api-test" 
-              className={`bg-burgundy-700 text-black px-4 py-2 rounded-lg hover:bg-burgundy-800 transition-all shadow-md ${robotoMono.className}`}
+              className={`bg-burgundy-700 dark:bg-burgundy-800 text-black dark:text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 dark:hover:bg-burgundy-700 transition-all shadow-md ${robotoMono.className}`}
             >
               API Testing
             </Link>
@@ -134,97 +134,97 @@ export default function DashboardPage() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className={`text-lg font-semibold text-burgundy-800 mb-2 ${robotoMono.className}`}>Properties</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+            <h2 className={`text-lg font-semibold text-burgundy-800 dark:text-burgundy-300 mb-2 ${robotoMono.className}`}>Properties</h2>
             <div className="flex items-end">
-              <span className="text-4xl font-bold text-gray-800">{propertyData.summary.totalProperties}</span>
-              <span className="text-gray-500 ml-2 mb-1">total</span>
+              <span className="text-4xl font-bold text-gray-800 dark:text-gray-200">{propertyData.summary.totalProperties}</span>
+              <span className="text-gray-500 dark:text-gray-400 ml-2 mb-1">total</span>
             </div>
-            <p className="text-gray-600 mt-2">Managing {propertyData.summary.totalUnits} units</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Managing {propertyData.summary.totalUnits} units</p>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className={`text-lg font-semibold text-burgundy-800 mb-2 ${robotoMono.className}`}>Maintenance</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+            <h2 className={`text-lg font-semibold text-burgundy-800 dark:text-burgundy-300 mb-2 ${robotoMono.className}`}>Maintenance</h2>
             <div className="flex items-end">
-              <span className="text-4xl font-bold text-gray-800">{propertyData.summary.totalMaintenanceRequests}</span>
-              <span className="text-gray-500 ml-2 mb-1">requests</span>
+              <span className="text-4xl font-bold text-gray-800 dark:text-gray-200">{propertyData.summary.totalMaintenanceRequests}</span>
+              <span className="text-gray-500 dark:text-gray-400 ml-2 mb-1">requests</span>
             </div>
-            <p className="text-gray-600 mt-2">Avg {propertyData.summary.averageMaintenancePerProperty} per property</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Avg {propertyData.summary.averageMaintenancePerProperty} per property</p>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className={`text-lg font-semibold text-burgundy-800 mb-2 ${robotoMono.className}`}>Next Inspection</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+            <h2 className={`text-lg font-semibold text-burgundy-800 dark:text-burgundy-300 mb-2 ${robotoMono.className}`}>Next Inspection</h2>
             <div className="flex items-end">
-              <span className="text-4xl font-bold text-gray-800">
+              <span className="text-4xl font-bold text-gray-800 dark:text-gray-200">
                 {new Date().getDate() + 3}
               </span>
-              <span className="text-gray-500 ml-2 mb-1">May</span>
+              <span className="text-gray-500 dark:text-gray-400 ml-2 mb-1">May</span>
             </div>
-            <p className="text-gray-600 mt-2">Parkside Residences</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Parkside Residences</p>
           </div>
         </div>
 
         {/* Properties Table */}
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className={`text-xl font-semibold text-burgundy-800 ${robotoMono.className}`}>Properties Overview</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 className={`text-xl font-semibold text-burgundy-800 dark:text-burgundy-300 ${robotoMono.className}`}>Properties Overview</h2>
           </div>
           
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Property Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Address
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Units
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Maintenance
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Last Inspection
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {propertyData.properties.map((property) => (
-                  <tr key={property.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <tr key={property.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                       {property.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {property.address}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {property.units}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         property.maintenance_requests > 3 
-                          ? 'bg-red-100 text-red-800' 
+                          ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200' 
                           : property.maintenance_requests > 0 
-                            ? 'bg-yellow-100 text-yellow-800' 
-                            : 'bg-green-100 text-green-800'
+                            ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200' 
+                            : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
                       }`}>
                         {property.maintenance_requests} requests
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {property.last_inspection}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <a 
                         href={`/api/index.php?property_id=${property.id}`}
                         target="_blank"
-                        className={`text-burgundy-700 hover:text-burgundy-900 ${robotoMono.className}`}
+                        className={`text-burgundy-700 dark:text-burgundy-300 hover:text-burgundy-900 dark:hover:text-burgundy-200 ${robotoMono.className}`}
                       >
                         View Details
                       </a>
