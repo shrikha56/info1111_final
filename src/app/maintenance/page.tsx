@@ -205,51 +205,51 @@ export default function MaintenancePage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
-      case 'in-progress': return 'bg-blue-100 text-blue-800'
-      case 'completed': return 'bg-green-100 text-green-800'
-      case 'cancelled': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'pending': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+      case 'in-progress': return 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+      case 'completed': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+      case 'cancelled': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
     }
   }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800'
-      case 'medium': return 'bg-yellow-100 text-yellow-800'
-      case 'low': return 'bg-green-100 text-green-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'high': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+      case 'medium': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+      case 'low': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
     }
   }
 
   return (
-    <div className="space-y-6 p-6 min-h-screen">
+    <div className="space-y-6 p-6 min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-black">Maintenance Requests</h1>
-          <p className="mt-1 text-sm text-black">Track and manage property maintenance issues</p>
+          <h1 className="text-2xl font-bold text-black dark:text-white">Maintenance Requests</h1>
+          <p className="mt-1 text-sm text-black dark:text-gray-300">Track and manage property maintenance issues</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 text-sm font-medium text-white bg-burgundy-700 border border-transparent rounded-md hover:bg-burgundy-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-burgundy-500"
+          className="px-4 py-2 text-sm font-medium text-black dark:text-white bg-burgundy-700 dark:bg-burgundy-800 border border-transparent rounded-md hover:bg-burgundy-800 dark:hover:bg-burgundy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-burgundy-500"
         >
           New Request
         </button>
       </div>
       
       {successMessage && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+        <div className="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-200 rounded">
           {successMessage}
         </div>
       )}
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
         <div className="flex flex-wrap gap-4">
           <select 
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-burgundy-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-black dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-burgundy-500"
           >
             <option value="">All Status</option>
             <option value="pending">Pending</option>
@@ -260,7 +260,7 @@ export default function MaintenancePage() {
           <select 
             value={filters.priority}
             onChange={(e) => setFilters({ ...filters, priority: e.target.value })}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-burgundy-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-black dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-burgundy-500"
           >
             <option value="">All Priority</option>
             <option value="high">High</option>
@@ -270,7 +270,7 @@ export default function MaintenancePage() {
           <select 
             value={filters.category}
             onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-black focus:outline-none focus:ring-2 focus:ring-burgundy-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-black dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-burgundy-500"
           >
             <option value="">All Categories</option>
             <option value="plumbing">Plumbing</option>
@@ -282,65 +282,65 @@ export default function MaintenancePage() {
       </div>
 
       {/* Requests List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         {loading ? (
           <div className="p-8 text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-burgundy-700 mb-2"></div>
-            <p className="text-gray-600">Loading maintenance requests...</p>
+            <p className="text-gray-600 dark:text-gray-300">Loading maintenance requests...</p>
           </div>
         ) : error ? (
           <div className="p-8 text-center">
-            <p className="text-red-600">{error}</p>
+            <p className="text-red-600 dark:text-red-400">{error}</p>
             <button 
               onClick={() => window.location.reload()}
-              className="mt-4 bg-burgundy-700 text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 transition-colors"
+              className="mt-4 bg-burgundy-700 dark:bg-burgundy-800 text-black dark:text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 dark:hover:bg-burgundy-700 transition-colors"
             >
               Try Again
             </button>
           </div>
         ) : filteredRequests.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-gray-600">No maintenance requests found.</p>
+            <p className="text-gray-600 dark:text-white">No maintenance requests found.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
                     Request ID
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
                     Issue
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
                     Unit
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
                     Priority
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredRequests.map((request) => (
-                  <tr key={request.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
+                  <tr key={request.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black dark:text-white">
                       #{request.id}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-black">{request.title}</div>
-                      <div className="text-sm text-black">{request.description}</div>
+                      <div className="text-sm text-black dark:text-white">{request.title}</div>
+                      <div className="text-sm text-black dark:text-white">{request.description}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-black dark:text-white">
                       {request.unit}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -353,14 +353,14 @@ export default function MaintenancePage() {
                         {request.priority.charAt(0).toUpperCase() + request.priority.slice(1)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-black dark:text-white">
                       {request.date}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button className="text-burgundy-700 hover:text-burgundy-900 mr-3">
+                      <button className="text-burgundy-700 dark:text-burgundy-400 hover:text-burgundy-900 dark:hover:text-burgundy-300 mr-3">
                         View
                       </button>
-                      <button className="text-gray-700 hover:text-gray-900">
+                      <button className="text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">
                         Edit
                       </button>
                     </td>
