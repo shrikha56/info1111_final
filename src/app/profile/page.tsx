@@ -1,8 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { Roboto_Mono } from 'next/font/google'
+import Link from 'next/link'
+import { setCookie, getCookie } from '@/utils/cookies'
+
+const robotoMono = Roboto_Mono({ subsets: ['latin'] })
 
 interface Property {
   id: string
@@ -66,8 +69,7 @@ interface UserProfile {
   announcements: Announcement[]
 }
 
-// Use Roboto Mono for code-like content
-const robotoMono = Roboto_Mono({ subsets: ['latin'] })
+// Roboto Mono font is defined at the top of the file
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
@@ -79,12 +81,22 @@ export default function ProfilePage() {
     email: ''
   })
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false)
+  const [preferencesEnabled, setPreferencesEnabled] = useState(true)
+  const [cookieSuccess, setCookieSuccess] = useState(false)
 
   // For demo purposes, use a fixed user ID
   const userId = '00000000-0000-0000-0000-000000000003' // John Manager
 
   useEffect(() => {
     fetchUserProfile()
+    
+    // Load current cookie settings
+    const analyticsValue = getCookie('analytics-enabled')
+    const preferencesValue = getCookie('preferences-enabled')
+    
+    setAnalyticsEnabled(analyticsValue === 'true')
+    setPreferencesEnabled(preferencesValue !== 'false') // Default to true if not set
   }, [])
 
   const fetchUserProfile = async () => {
@@ -428,6 +440,81 @@ export default function ProfilePage() {
               <p className="text-gray-500">No notifications.</p>
             )}
           </div>
+        </div>
+        
+        {/* Cookie Preferences Section */}
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className={`text-xl font-bold text-burgundy-800 ${robotoMono.className}`}>Privacy Preferences</h2>
+            <button
+              onClick={() => {
+                // Save cookie preferences
+                setCookie('analytics-enabled', analyticsEnabled ? 'true' : 'false', 365)
+                setCookie('preferences-enabled', preferencesEnabled ? 'true' : 'false', 365)
+                setCookie('cookie-consent', 'customized', 365)
+                
+                // Show success message
+                setCookieSuccess(true)
+                setTimeout(() => setCookieSuccess(false), 3000)
+              }}
+              className={`px-4 py-2 bg-burgundy-700 text-black rounded-md hover:bg-burgundy-800 ${robotoMono.className}`}
+            >
+              Save Preferences
+            </button>
+          </div>
+          
+          <div className="space-y-4 mb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-medium text-gray-900">Essential Cookies</h3>
+                <p className="text-sm text-gray-500">Required for the website to function properly</p>
+              </div>
+              <div className="flex items-center">
+                <input 
+                  type="checkbox" 
+                  checked={true} 
+                  disabled={true}
+                  className="h-4 w-4 rounded border-gray-300 text-burgundy-700 focus:ring-burgundy-500" 
+                />
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-medium text-gray-900">Analytics Cookies</h3>
+                <p className="text-sm text-gray-500">Help us improve our website by collecting anonymous usage data</p>
+              </div>
+              <div className="flex items-center">
+                <input 
+                  type="checkbox" 
+                  checked={analyticsEnabled} 
+                  onChange={(e) => setAnalyticsEnabled(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-burgundy-700 focus:ring-burgundy-500" 
+                />
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-medium text-gray-900">Preferences Cookies</h3>
+                <p className="text-sm text-gray-500">Remember your settings and preferences</p>
+              </div>
+              <div className="flex items-center">
+                <input 
+                  type="checkbox" 
+                  checked={preferencesEnabled} 
+                  onChange={(e) => setPreferencesEnabled(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-burgundy-700 focus:ring-burgundy-500" 
+                />
+              </div>
+            </div>
+          </div>
+          
+          {cookieSuccess && (
+            <div className="p-3 bg-green-50 text-green-800 rounded-md">
+              Your privacy preferences have been saved.
+            </div>
+          )}
         </div>
       </div>
     </div>
