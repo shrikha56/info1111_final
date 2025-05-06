@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { HomeIcon, UserGroupIcon, WrenchScrewdriverIcon, CalendarIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, UserGroupIcon, WrenchScrewdriverIcon, CalendarIcon, DocumentTextIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -11,6 +11,7 @@ const navigation = [
   { name: 'Levy Deadlines', href: '/levy', icon: CalendarIcon },
   { name: 'Policies & Reports', href: '/policies', icon: DocumentTextIcon },
   { name: 'API Testing', href: '/api-test', icon: DocumentTextIcon },
+  { name: 'Cookie Policy', href: '/cookie-policy', icon: ShieldCheckIcon },
 ]
 
 export default function Navigation() {
