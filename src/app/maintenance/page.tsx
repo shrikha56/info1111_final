@@ -206,10 +206,10 @@ export default function MaintenancePage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
-      case 'in-progress': return 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+      case 'in-progress': return 'bg-burgundy-100 dark:bg-burgundy-900 text-burgundy-800 dark:text-burgundy-200'
       case 'completed': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
       case 'cancelled': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
-      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white'
     }
   }
 
@@ -218,7 +218,7 @@ export default function MaintenancePage() {
       case 'high': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
       case 'medium': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
       case 'low': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white'
     }
   }
 
@@ -227,7 +227,7 @@ export default function MaintenancePage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-black dark:text-white">Maintenance Requests</h1>
-          <p className="mt-1 text-sm text-black dark:text-gray-300">Track and manage property maintenance issues</p>
+          <p className="mt-1 text-sm text-black dark:text-white">Track and manage property maintenance issues</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -286,7 +286,7 @@ export default function MaintenancePage() {
         {loading ? (
           <div className="p-8 text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-burgundy-700 mb-2"></div>
-            <p className="text-gray-600 dark:text-gray-300">Loading maintenance requests...</p>
+            <p className="text-gray-600 dark:text-white">Loading maintenance requests...</p>
           </div>
         ) : error ? (
           <div className="p-8 text-center">
@@ -307,25 +307,25 @@ export default function MaintenancePage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-white uppercase tracking-wider">
                     Request ID
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-white uppercase tracking-wider">
                     Issue
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-white uppercase tracking-wider">
                     Unit
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-white uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-white uppercase tracking-wider">
                     Priority
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-black dark:text-white uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-black dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-black dark:text-white uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -360,7 +360,7 @@ export default function MaintenancePage() {
                       <button className="text-burgundy-700 dark:text-burgundy-400 hover:text-burgundy-900 dark:hover:text-burgundy-300 mr-3">
                         View
                       </button>
-                      <button className="text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">
+                      <button className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-300">
                         Edit
                       </button>
                     </td>

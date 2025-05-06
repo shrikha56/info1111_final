@@ -40,7 +40,7 @@ export default function LevyPage() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Levy Deadlines</h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">Manage and track levy payments and deadlines</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-white">Manage and track levy payments and deadlines</p>
           </div>
           <button className="bg-burgundy-700 dark:bg-burgundy-800 text-black dark:text-white px-4 py-2 rounded-lg hover:bg-burgundy-800 dark:hover:bg-burgundy-700 transition-colors">
             New Levy
@@ -52,7 +52,7 @@ export default function LevyPage() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Outstanding</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-white">Total Outstanding</p>
                 <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">$12,450</p>
               </div>
               <div className="bg-red-100 dark:bg-red-900 p-3 rounded-full">
@@ -74,7 +74,7 @@ export default function LevyPage() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Next Due Date</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-white">Next Due Date</p>
                 <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">Mar 31, 2025</p>
               </div>
               <div className="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-full">
@@ -96,7 +96,7 @@ export default function LevyPage() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Payment Rate</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-white">Payment Rate</p>
                 <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">92%</p>
               </div>
               <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full">
@@ -125,19 +125,19 @@ export default function LevyPage() {
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                     Levy ID
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                     Description
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                     Due Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                     Status
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -153,12 +153,12 @@ export default function LevyPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900 dark:text-white">Q1 2025 Maintenance</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Regular quarterly levy</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Regular quarterly levy</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     $1,250
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
                     Mar 31, 2025
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -170,7 +170,7 @@ export default function LevyPage() {
                     <button className="text-burgundy-700 dark:text-burgundy-400 hover:text-burgundy-900 dark:hover:text-burgundy-300 mr-3">
                       View
                     </button>
-                    <button className="text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">
+                    <button className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-300">
                       Edit
                     </button>
                   </td>
@@ -183,12 +183,12 @@ export default function LevyPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900 dark:text-white">Special Levy</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Building repairs</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Building repairs</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     $2,500
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
                     Apr 15, 2025
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -200,7 +200,7 @@ export default function LevyPage() {
                     <button className="text-burgundy-700 dark:text-burgundy-400 hover:text-burgundy-900 dark:hover:text-burgundy-300 mr-3">
                       View
                     </button>
-                    <button className="text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">
+                    <button className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-300">
                       Edit
                     </button>
                   </td>

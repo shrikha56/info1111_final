@@ -241,7 +241,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
         <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">No Profile Data Available</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">No Profile Data Available</h2>
         </div>
       </div>
     )
@@ -276,7 +276,7 @@ export default function ProfilePage() {
           {isEditing ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Name</label>
+                <label className="block text-gray-700 dark:text-white font-medium mb-2">Name</label>
                 <input
                   type="text"
                   name="name"
@@ -288,7 +288,7 @@ export default function ProfilePage() {
               </div>
               
               <div>
-                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Email</label>
+                <label className="block text-gray-700 dark:text-white font-medium mb-2">Email</label>
                 <input
                   type="email"
                   name="email"
@@ -300,14 +300,14 @@ export default function ProfilePage() {
               </div>
               
               <div>
-                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Role</label>
+                <label className="block text-gray-700 dark:text-white font-medium mb-2">Role</label>
                 <input
                   type="text"
                   value={profile.user.role}
                   className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                   disabled
                 />
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Role cannot be changed</p>
+                <p className="text-sm text-gray-500 dark:text-white mt-1">Role cannot be changed</p>
               </div>
               
               <button
@@ -334,30 +334,30 @@ export default function ProfilePage() {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Name</h3>
-                  <p className="text-gray-900 dark:text-gray-100">{profile.user.name}</p>
+                  <h3 className="text-gray-500 dark:text-white font-medium mb-1">Name</h3>
+                  <p className="text-gray-900 dark:text-white">{profile.user.name}</p>
                 </div>
                 
                 <div>
-                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Email</h3>
-                  <p className="text-gray-900 dark:text-gray-100">{profile.user.email}</p>
+                  <h3 className="text-gray-500 dark:text-white font-medium mb-1">Email</h3>
+                  <p className="text-gray-900 dark:text-white">{profile.user.email}</p>
                 </div>
                 
                 <div>
-                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Role</h3>
-                  <p className="text-gray-900 dark:text-gray-100 capitalize">{profile.user.role}</p>
+                  <h3 className="text-gray-500 dark:text-white font-medium mb-1">Role</h3>
+                  <p className="text-gray-900 dark:text-white capitalize">{profile.user.role}</p>
                 </div>
                 
                 <div>
-                  <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">Member Since</h3>
-                  <p className="text-gray-900 dark:text-gray-100">
+                  <h3 className="text-gray-500 dark:text-white font-medium mb-1">Member Since</h3>
+                  <p className="text-gray-900 dark:text-white">
                     {new Date(profile.user.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
               
               <div>
-                <h3 className="text-gray-700 dark:text-gray-300 font-semibold mb-2">Properties</h3>
+                <h3 className="text-gray-700 dark:text-white font-semibold mb-2">Properties</h3>
                 {profile.user.properties.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {profile.user.properties.map(property => (
@@ -365,7 +365,7 @@ export default function ProfilePage() {
                         <p className="font-medium">Unit {property.unit_number}</p>
                         <p className="text-gray-600 dark:text-gray-400 text-sm">{property.address}</p>
                         {property.building && (
-                          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                          <p className="text-gray-500 dark:text-white text-sm mt-1">
                             {property.building.name}
                           </p>
                         )}
@@ -373,7 +373,7 @@ export default function ProfilePage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 dark:text-gray-400">No properties associated with this account.</p>
+                  <p className="text-gray-500 dark:text-white">No properties associated with this account.</p>
                 )}
               </div>
             </div>
@@ -389,18 +389,18 @@ export default function ProfilePage() {
                 {profile.maintenanceRequests.map(request => (
                   <div key={request.id} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0">
                     <div className="flex justify-between items-start">
-                      <h3 className="font-medium text-gray-900 dark:text-gray-100">{request.title}</h3>
+                      <h3 className="font-medium text-gray-900 dark:text-white">{request.title}</h3>
                       <span className={`text-sm px-2 py-1 rounded-full ${
                         request.status === 'completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' :
-                        request.status === 'in_progress' ? 'bg-blue-100 dark:bg-gray-700 text-blue-800 dark:text-gray-200' :
+                        request.status === 'in_progress' ? 'bg-burgundy-100 dark:bg-burgundy-900 text-burgundy-800 dark:text-white' :
                         request.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200' :
-                        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+                        'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white'
                       }`}>
                         {request.status.replace('_', ' ')}
                       </span>
                     </div>
                     <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{request.description}</p>
-                    <div className="flex justify-between items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex justify-between items-center mt-2 text-xs text-gray-500 dark:text-white">
                       <span>{new Date(request.created_at).toLocaleDateString()}</span>
                       <span className="capitalize">{request.priority} priority</span>
                     </div>
@@ -408,7 +408,7 @@ export default function ProfilePage() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">No maintenance requests found.</p>
+              <p className="text-gray-500 dark:text-white">No maintenance requests found.</p>
             )}
             
             <div className="mt-4">
@@ -428,16 +428,16 @@ export default function ProfilePage() {
               <div className="space-y-3">
                 {profile.notifications.map(notification => (
                   <div key={notification.id} className={`p-3 rounded-lg ${notification.is_read ? 'bg-gray-50 dark:bg-gray-700' : 'bg-burgundy-50 dark:bg-burgundy-900/30'}`}>
-                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{notification.title}</h3>
+                    <h3 className="font-medium text-gray-900 dark:text-white">{notification.title}</h3>
                     <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{notification.message}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-xs text-gray-500 dark:text-white mt-2">
                       {new Date(notification.created_at).toLocaleDateString()}
                     </p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">No notifications.</p>
+              <p className="text-gray-500 dark:text-white">No notifications.</p>
             )}
           </div>
         </div>
@@ -466,8 +466,8 @@ export default function ProfilePage() {
           <div className="space-y-4 mb-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Essential Cookies</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Required for the website to function properly</p>
+                <h3 className="font-medium text-gray-900 dark:text-white">Essential Cookies</h3>
+                <p className="text-sm text-gray-500 dark:text-white">Required for the website to function properly</p>
               </div>
               <div className="flex items-center">
                 <input 
@@ -481,8 +481,8 @@ export default function ProfilePage() {
             
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Analytics Cookies</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Help us improve our website by collecting anonymous usage data</p>
+                <h3 className="font-medium text-gray-900 dark:text-white">Analytics Cookies</h3>
+                <p className="text-sm text-gray-500 dark:text-white">Help us improve our website by collecting anonymous usage data</p>
               </div>
               <div className="flex items-center">
                 <input 
@@ -496,8 +496,8 @@ export default function ProfilePage() {
             
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">Preferences Cookies</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Remember your settings and preferences</p>
+                <h3 className="font-medium text-gray-900 dark:text-white">Preferences Cookies</h3>
+                <p className="text-sm text-gray-500 dark:text-white">Remember your settings and preferences</p>
               </div>
               <div className="flex items-center">
                 <input 
