@@ -29,13 +29,23 @@ interface PropertyData {
   summary: Summary
 }
 
+interface AnalyticsData {
+  totalRequestsThisMonth: number
+  averageCompletionTimeHours: number | null
+  topProperties: Array<{ property_id: string; total: number }>
+  completionRate: number | null
+  monthlyTrend: Array<{ month: string; total: number }>
+}
+
 export default function DashboardPage() {
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
 
   useEffect(() => {
     fetchPropertyData()
+    fetchAnalytics()
   }, [])
 
   const fetchPropertyData = async () => {
@@ -56,6 +66,19 @@ export default function DashboardPage() {
       console.error('Error fetching property data:', err)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const fetchAnalytics = async () => {
+    try {
+      const response = await fetch('/api/dashboard-analytics')
+      if (!response.ok) {
+        throw new Error(`Failed to fetch analytics data: ${response.status}`)
+      }
+      const data = await response.json()
+      setAnalyticsData(data)
+    } catch (err) {
+      console.error('Error fetching analytics:', err)
     }
   }
 
@@ -163,6 +186,43 @@ export default function DashboardPage() {
             <p className="text-gray-600 dark:text-gray-400 mt-2">Parkside Residences</p>
           </div>
         </div>
+
+        {/* Analytics Section */}
+        {analyticsData && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 mb-6">
+            <h2 className={`text-xl font-semibold text-burgundy-800 dark:text-burgundy-300 mb-4 ${robotoMono.className}`}>Analytics</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h3 className="text-sm font-semibold text-burgundy-800 dark:text-burgundy-300">Total Requests (This Month)</h3>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{analyticsData.totalRequestsThisMonth}</p>
+              </div>
+              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h3 className="text-sm font-semibold text-burgundy-800 dark:text-burgundy-300">Average Completion Time (Hours)</h3>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{analyticsData.averageCompletionTimeHours !== null ? analyticsData.averageCompletionTimeHours.toFixed(1) : "N/A"}</p>
+              </div>
+              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h3 className="text-sm font-semibold text-burgundy-800 dark:text-burgundy-300">Completion Rate (%)</h3>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{analyticsData.completionRate !== null ? analyticsData.completionRate.toFixed(1) : "N/A"}</p>
+              </div>
+            </div>
+            <div className="mt-4">
+              <h3 className="text-sm font-semibold text-burgundy-800 dark:text-burgundy-300 mb-2">Top 3 Properties (by Requests)</h3>
+              <ul className="list-disc pl-5 text-gray-800 dark:text-gray-200">
+                {analyticsData.topProperties.map((prop, i) => (
+                  <li key={i}>Property {prop.property_id} – {prop.total} requests</li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-4">
+              <h3 className="text-sm font-semibold text-burgundy-800 dark:text-burgundy-300 mb-2">Monthly Trend (Last 6 Months)</h3>
+              <ul className="list-disc pl-5 text-gray-800 dark:text-gray-200">
+                {analyticsData.monthlyTrend.map((trend, i) => (
+                  <li key={i}>{trend.month} – {trend.total} requests</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
 
         {/* Properties Table */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
