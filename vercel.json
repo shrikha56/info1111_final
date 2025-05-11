@@ -50,8 +50,16 @@
     "autoJobCancelation": true
   },
   "functions": {
-    "api/*.php": {
-      "runtime": "vercel-php@0.7.3"
+    "api/index.php": {
+      "runtime": "vercel-php@0.7.3",
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "src/app/api/**/*.ts": {
+      "memory": 256,
+      "maxDuration": 30,
+      "excludeFiles": "node_modules/**",
+      "includeFiles": "src/lib/supabase-client.ts"
     },
     "src/app/api/generate-report/*.ts": {
       "memory": 1024,
